@@ -1,35 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <div style="text-align: center; margin-top: 30px;">
-    <img src="{{ asset('images/manaevent-logo.svg') }}" alt="ManaEvent.bn Logo" width="200">
-</div>
+@extends('layouts.app')
 
-    <meta charset="UTF-8">
-    <title>ManaEvent.bn</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #fffbea;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        h1 {
-            color: #f7a738;
-            font-size: 3rem;
-        }
-        p {
-            font-size: 1.2rem;
-            color: #333;
-        }
-    </style>
-</head>
-<body>
-    <h1>Welcome to ManaEvent.bn</h1>
-    <p>Your centralized hub for all local events in Brunei.</p>
-</body>
-</html>
+@section('content')
+<div style="text-align: center; margin-top: 80px;">
+    <h1 style="font-size: 2.5rem; color: #f4a825;">Explore Local Events</h1>
+    <p style="font-size: 1.2rem; color: #333;">Discover what's happening near you with ManaEvent.bn</p>
+
+    <div style="margin-top: 40px;">
+        <a href="#" style="padding: 10px 20px; background-color: #f4a825; color: white; text-decoration: none; border-radius: 8px;">Browse Events</a>
+        <a href="#" style="padding: 10px 20px; margin-left: 10px; background-color: transparent; border: 2px solid #f4a825; color: #f4a825; text-decoration: none; border-radius: 8px;">Submit Your Event</a>
+    </div>
+</div>
+@endsection

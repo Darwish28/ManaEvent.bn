@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
 Route::get('/', function () {
+    return view('splash');
+})->name('splash');
+
+Route::get('/home', function () {
     return view('home');
 })->name('home');
 
