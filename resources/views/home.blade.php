@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <div style="text-align: center; margin-top: 30px;">
+    <img src="{{ asset('images/manaevent-logo.svg') }}" alt="ManaEvent.bn Logo" width="200">
+</div>
+
     <meta charset="UTF-8">
     <title>ManaEvent.bn</title>
     <style>
