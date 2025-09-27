@@ -11,6 +11,8 @@
             </a>
         </div>
     </div>
+    <h1 class="text-4xl font-bold text-red-500">If this is big & red, Tailwind works!</h1>
+
 @endsection
 
 
