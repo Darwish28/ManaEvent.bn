@@ -1,13 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
-<div style="text-align: center; margin-top: 80px;">
-    <h1 style="font-size: 2.5rem; color: #f4a825;">Explore Local Events</h1>
-    <p style="font-size: 1.2rem; color: #333;">Discover what's happening near you with ManaEvent.bn</p>
+    <div class="min-h-screen flex flex-col justify-center items-center bg-gray-100">
+        <div class="bg-white p-10 rounded-2xl shadow-lg text-center w-full max-w-md">
+            <h1 class="text-3xl font-bold text-blue-700 mb-4">Welcome to ManaEvent.bn</h1>
+            <p class="text-gray-600 mb-6">Your one-stop platform to explore Brunei’s local events and pop-up happenings!</p>
 
-    <div style="margin-top: 40px;">
-        <a href="#" style="padding: 10px 20px; background-color: #f4a825; color: white; text-decoration: none; border-radius: 8px;">Browse Events</a>
-        <a href="#" style="padding: 10px 20px; margin-left: 10px; background-color: transparent; border: 2px solid #f4a825; color: #f4a825; text-decoration: none; border-radius: 8px;">Submit Your Event</a>
+            <a href="#" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition">
+                Explore Events
+            </a>
+        </div>
     </div>
-</div>
 @endsection
+
+
+
+
+
