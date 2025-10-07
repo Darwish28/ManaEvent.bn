@@ -1,39 +1,44 @@
+import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-// Pages
+// ✅ Pages
 import AdminLogin from "./Pages/Login";
 import AdminDashboard from "./Pages/Dashboard";
-import EventSubmissions from "./Pages/Eventsubmission";
+import EventSubmissions from "./Pages/EventSubmission";
 import PublishEvent from "./Pages/PublishEvent";
 import UserManagement from "./Pages/UserManagement";
 import NotificationSettings from "./Pages/NotificationSettings";
 import AdminSettings from "./Pages/AdminSettings";
 
-// Components
+// ✅ Components
 import AdminLayout from "./Components/AdminLayout";
 
-// Context
+// ✅ Context
 import { AdminAuthProvider, useAdminAuth } from "./Context/AdminAuthContext";
 
 // ✅ Protected Route wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAdminAuth();
+
   if (!isAuthenticated) {
-    return <Navigate to="/admin/login" replace />;
+    // Redirect unauthenticated users to /admin/login
+    return <Navigate to="login" replace />;
   }
+
   return <>{children}</>;
 };
 
+// ✅ Main Router
 export default function AdminRouter() {
   return (
     <AdminAuthProvider>
       <Routes>
         {/* Public route */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="login" element={<AdminLogin />} />
 
-        {/* Protected admin routes */}
+        {/* Protected routes under /admin/* */}
         <Route
-          path="/admin"
+          path="/"
           element={
             <ProtectedRoute>
               <AdminLayout />
@@ -47,6 +52,9 @@ export default function AdminRouter() {
           <Route path="notifications" element={<NotificationSettings />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
+
+        {/* Catch all — redirect to dashboard if path doesn’t exist */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AdminAuthProvider>
   );

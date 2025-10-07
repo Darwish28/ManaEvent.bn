@@ -40,7 +40,10 @@ Route::middleware(['auth'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::view('/admin/{any}', 'app')->where('any', '.*');
+// Admin routes
+Route::get('/admin/{any?}', function () {
+    return view('app');
+})->where('any', '.*');
 
 
 

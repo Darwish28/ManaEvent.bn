@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAdminAuth } from '../Context/AdminAuthContext'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import "../../../css/app.css";
+
 const AdminLogin = () => {
   const [adminId, setAdminId] = useState('')
   const [password, setPassword] = useState('')
