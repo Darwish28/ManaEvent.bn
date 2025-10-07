@@ -15,7 +15,7 @@ const NotificationSettings = () => {
       description:
         'Notify users when their submitted event is approved, rejected, or published',
       enabled: true,
-      icon: <BellIcon size={20} className="text-blue-500" />,
+      icon: <BellIcon size={20} className="text-yellow-400" />,
     },
     {
       id: 'event-reminder',
@@ -23,14 +23,14 @@ const NotificationSettings = () => {
       description:
         "Send reminders to users about upcoming events they've registered for",
       enabled: true,
-      icon: <BellIcon size={20} className="text-blue-500" />,
+      icon: <BellIcon size={20} className="text-yellow-400" />,
     },
     {
       id: 'new-registration',
       name: 'New User Registration',
       description: 'Notify admins when new users register on the platform',
       enabled: false,
-      icon: <BellIcon size={20} className="text-blue-500" />,
+      icon: <BellIcon size={20} className="text-yellow-400" />,
     },
     {
       id: 'email-marketing',
@@ -38,7 +38,7 @@ const NotificationSettings = () => {
       description:
         'Send promotional emails about featured events and platform updates',
       enabled: false,
-      icon: <MailIcon size={20} className="text-blue-500" />,
+      icon: <MailIcon size={20} className="text-yellow-400" />,
     },
     {
       id: 'weekly-digest',
@@ -46,7 +46,7 @@ const NotificationSettings = () => {
       description:
         'Send users a weekly digest of upcoming events in their area',
       enabled: true,
-      icon: <MailIcon size={20} className="text-blue-500" />,
+      icon: <MailIcon size={20} className="text-yellow-500" />,
     },
   ])
   const [isSaving, setIsSaving] = useState(false)
@@ -101,9 +101,9 @@ const NotificationSettings = () => {
           <div className="bg-blue-50 p-4 rounded-lg mb-6 flex items-start">
             <InfoIcon
               size={20}
-              className="text-blue-500 mt-0.5 flex-shrink-0"
+              className="text-red-400 mt-0.5 flex-shrink-0"
             />
-            <p className="text-sm text-blue-700 ml-3">
+            <p className="text-sm text-gray-900 ml-3">
               These settings control the automated notifications sent to users
               and administrators. Notifications can help increase user
               engagement but should be used thoughtfully to avoid overwhelming
@@ -130,7 +130,7 @@ const NotificationSettings = () => {
                 <div className="ml-4 flex-shrink-0">
                   <button
                     type="button"
-                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${setting.enabled ? 'bg-blue-600' : 'bg-gray-200'}`}
+                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-200 focus:ring-offset-2 ${setting.enabled ? 'bg-yellow-400' : 'bg-gray-200'}`}
                     role="switch"
                     aria-checked={setting.enabled}
                     onClick={() => handleToggle(setting.id)}
@@ -154,7 +154,7 @@ const NotificationSettings = () => {
               type="button"
               onClick={handleSaveSettings}
               disabled={isSaving}
-              className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${isSaving ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+              className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${isSaving ? 'bg-yellow-400' : 'bg-yellow-400 hover:bg-yellow-500'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
             >
               {isSaving ? 'Saving...' : 'Save Settings'}
             </button>

@@ -22,7 +22,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (!isAuthenticated) {
     // Redirect unauthenticated users to /admin/login
-    return <Navigate to="login" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
 
   return <>{children}</>;
@@ -34,11 +34,11 @@ export default function AdminRouter() {
     <AdminAuthProvider>
       <Routes>
         {/* Public route */}
-        <Route path="login" element={<AdminLogin />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
 
         {/* Protected routes under /admin/* */}
         <Route
-          path="/"
+          path="/admin"
           element={
             <ProtectedRoute>
               <AdminLayout />
@@ -54,7 +54,7 @@ export default function AdminRouter() {
         </Route>
 
         {/* Catch all — redirect to dashboard if path doesn’t exist */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </AdminAuthProvider>
   );

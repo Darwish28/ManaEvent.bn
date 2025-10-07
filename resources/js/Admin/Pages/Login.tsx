@@ -50,7 +50,7 @@ const AdminLogin = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-3xl font-extrabold text-blue-600">ManaEvent</h1>
+          <h1 className="text-3xl font-extrabold text-yellow-300">ManaEvent</h1>
           <h2 className="mt-6 text-2xl font-bold text-gray-900">Admin Login</h2>
           <p className="mt-2 text-sm text-gray-600">
             Enter your credentials to access the admin dashboard
@@ -76,7 +76,7 @@ const AdminLogin = () => {
                 name="admin-id"
                 type="text"
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Admin ID (optional)"
+                placeholder="Admin ID"
                 value={adminId}
                 onChange={(e) => setAdminId(e.target.value)}
               />
@@ -90,7 +90,7 @@ const AdminLogin = () => {
                 name="password"
                 type={showPassword ? 'text' : 'password'}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Password (optional)"
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -125,7 +125,7 @@ const AdminLogin = () => {
             <div className="text-sm">
               <a
                 href="#"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium text-black-600 hover:text-yellow-400"
               >
                 Forgot your password?
               </a>
@@ -136,14 +136,12 @@ const AdminLogin = () => {
               type="button"
               onClick={handleDirectLogin}
               disabled={isLoading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${isLoading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${isLoading ? 'bg-blue-400' : 'bg-yellow-300 hover:bg-yellow-600'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
             >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
-          <p className="text-xs text-center text-gray-500 mt-2">
-            For demo purposes, you can sign in directly without credentials.
-          </p>
+      
         </form>
       </div>
     </div>

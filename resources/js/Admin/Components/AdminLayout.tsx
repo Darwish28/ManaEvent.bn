@@ -71,7 +71,7 @@ const AdminLayout = () => {
       >
         <div className="flex flex-col h-full">
           <div className="px-4 py-6 border-b">
-            <h1 className="text-2xl font-bold text-blue-600">ManaEvent</h1>
+            <h1 className="text-2xl font-bold text-yellow-300">ManaEvent</h1>
             <p className="text-sm text-gray-600 mt-1">Admin Panel</p>
           </div>
           <div className="flex-1 px-4 py-6 overflow-y-auto">
@@ -81,9 +81,10 @@ const AdminLayout = () => {
                   key={item.path}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${isActive ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100'}`
+                    `flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${isActive ? 'bg-yellow-50 text-yellow-500' : 'text-gray-700 hover:bg-gray-100'}`
                   }
                   onClick={() => setSidebarOpen(false)}
+                  {...(item.path === '/admin' ? { end: true } : {})} // <-- only highlight dashboard on exact match
                 >
                   <span className="mr-3">{item.icon}</span>
                   {item.name}
@@ -93,7 +94,7 @@ const AdminLayout = () => {
           </div>
           <div className="px-4 py-4 border-t">
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
+              <div className="w-10 h-10 rounded-full bg-blue-00 flex items-center justify-center text-yellow-400 font-semibold">
                 {adminUser?.name.charAt(0) || 'A'}
               </div>
               <div className="ml-3">

@@ -66,7 +66,7 @@ const AdminSettings = () => {
           </div>
           <div className="p-6">
             <div className="flex items-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-xl">
+              <div className="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 font-semibold text-xl">
                 {adminUser?.name.charAt(0) || 'A'}
               </div>
               <div className="ml-4">
@@ -183,7 +183,7 @@ const AdminSettings = () => {
                 <button
                   type="submit"
                   disabled={isChangingPassword}
-                  className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${isChangingPassword ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                  className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${isChangingPassword ? 'bg-yellow-400' : 'bg-yellow-400 hover:bg-yellow-500'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
                 >
                   {isChangingPassword ? 'Changing...' : 'Change Password'}
                 </button>
