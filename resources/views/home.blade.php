@@ -144,14 +144,18 @@
     <div class="event-card">
       <img src="/images/foodfestival.svg" alt="Food Festival">
       <p>FOOD FESTIVAL</p>
-      <div class="view-more"><a href="#">View more</a></div>
-    </div>
-    <div class="event-card">
-      <img src="/images/donation.svg" alt="Donation">
-      <p>DONATION</p>
-      <div class="view-more"><a href="#">View more</a></div>
-    </div>
+  <div class="view-more">
+    <a href="{{ route('events.food-festival') }}">View more</a>
   </div>
+</div>
+
+<div class="event-card">
+  <img src="/images/donation.svg" alt="Donation">
+  <p>DONATION</p>
+  <div class="view-more">
+    <a href="{{ route('events.donation') }}">View more</a>
+  </div>
+</div>
 
   <!-- Upcoming Events -->
   <div class="section-title">UPCOMING EVENTS !</div>
