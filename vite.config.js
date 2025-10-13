@@ -9,6 +9,7 @@ export default defineConfig({
       input: [
         'resources/js/app.js',   // for customer site
         'resources/js/main.tsx', // for admin React app
+         'resources/css/app.css',
       ],
       refresh: true,
     }),
