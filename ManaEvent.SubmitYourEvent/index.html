@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Your Event - Mana Event</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar" class="sidebar">
+    <button id="closeSidebar" class="close-btn">×</button>
+    <ul>
+      <li><a href="#"><span>🏠</span> HOME</a></li>
+      <li><a href="#"><span>ℹ️</span> ABOUT US</a></li>
+      <li><a href="#"><span>❓</span> FAQ</a></li>
+      <li><a href="#"><span>📞</span> CONTACT US</a></li>
+      <li><a href="#"><span>➕</span> SUBMIT YOUR EVENT</a></li>
+      <li><a href="#"><span>⚙️</span> SETTINGS</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <div class="top-bar">
+      <button id="menuBtn" class="menu-btn">☰</button>
+      <img src="logo.png" alt="Mana Event Logo" class="logo">
+    </div>
+  </header>
+
+  <!-- Main Form Section -->
+  <main>
+    <h2 class="form-title">SUBMIT YOUR EVENT</h2>
+
+    <form id="eventForm">
+      <input type="text" placeholder="Full Name*" required>
+      <input type="email" placeholder="Email*" required>
+      <input type="tel" placeholder="Phone Number*" required>
+      <input type="text" placeholder="Event Name*" required>
+
+      <div class="date-row">
+        <label>Start:</label>
+        <input type="date" required>
+        <label>End:</label>
+        <input type="date" required>
+      </div>
+
+      <input type="text" placeholder="Event Location*" required>
+      <textarea placeholder="Short Description*" required></textarea>
+      <input type="file" accept="image/*">
+
+      <button type="submit" class="submit-btn">SUBMIT</button>
+    </form>
+
+    <div id="thankYou" class="hidden">
+      <div class="checkmark">✔</div>
+      <h2>THANK YOU!</h2>
+      <p>Your submission has been sent.</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>©2025 Mana Event.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
