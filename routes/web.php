@@ -7,8 +7,16 @@ use App\Livewire\Settings\TwoFactor;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
+Route::view('/events/theatre-performance', 'events.theatre-performance')->name('events.theatre-performance');
 Route::view('/events/food-festival', 'events.food-festival')->name('events.food-festival');
 Route::view('/events/donation', 'events.donation')->name('events.donation');
+Route::view('/events/firework-show', 'events.firework-show')->name('events.firework-show');
+Route::view('/about', 'about')->name('about');
+Route::view('/faq', 'faq')->name('faq');
+Route::view('/settings', 'settings')->name('settings');
+Route::view('/submit-event', 'submit-event')->name('submit-event');
+Route::view('/', 'home')->name('home');
+Route::view('/contact', 'contact')->name('contact');
 
 
 Route::get('/', function () {

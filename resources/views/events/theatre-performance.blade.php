@@ -35,28 +35,23 @@
     </header>
 
     <div class="max-w-md mx-auto overflow-hidden rounded-b-2xl">
-    <img src="/images/foodfestival.svg" 
-         alt="Food Festival" 
-         class="w-full h-auto object-cover rounded-b-2xl">
-</div>
-
+        <img src="/images/rtspoli.png" alt="Theatre Performance" class="w-full h-auto object-cover rounded-b-2xl">
 
     <section class="p-5 text-gray-800">
         <h2 class="text-lg font-extrabold mb-2">EVENT DETAILS:</h2>
         <p class="text-sm mb-4 leading-relaxed">
-            A lively celebration of culture and cuisine, bringing together local chefs and global dishes. 
-            Taste diverse flavours, watch live demos, and enjoy performances—all while supporting small food businesses.
+            Experience an evening of drama, music, and storytelling. Talented performers bring stories to life
+            on stage in a blend of classical and contemporary plays. A must-see night of inspiration and artistry.
         </p>
 
-        <p><span class="text-red-500">📍</span> <strong>LOCATION:</strong> The One, Batu Satu, Bandar Seri Begawan</p>
-        <p><span class="text-gray-800">📅</span> <strong>DATE:</strong> 11–14 September, 3PM–9PM</p>
+        <p><span class="text-red-500">📍</span> <strong>LOCATION:</strong> Bridex, Jerudong Park, Jerudong</p>
+        <p><span class="text-gray-800">📅</span> <strong>DATE:</strong> 21st September, 6PM–9PM</p>
     </section>
 
     <section class="p-5">
         <h3 class="font-semibold text-base mb-2">Event Map 📍</h3>
-        <a href="https://maps.app.goo.gl/xYqGnY86mvBNqZ9j6" target="_blank">
-            <div class="max-w-md mx-auto overflow-hidden rounded-b-2xl">
-            <img src="/images/foodlocation.png" alt="Map" class="w-full h-auto object-cover rounded-b-2xl">
+        <a href="https://maps.app.goo.gl/LhqRd1wAzMgBZ2QX6" target="_blank">
+            <img src="/images/donationlocation.png" alt="Map" class="w-full rounded-lg shadow-md">
             <p class="text-xs italic mt-1 text-center text-gray-500">Tap to open in Google Maps.</p>
         </a>
     </section>
@@ -66,7 +61,7 @@
     </footer>
 </div>
 
-    @section('scripts')
+@section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const menuBtn = document.getElementById('menu-btn');

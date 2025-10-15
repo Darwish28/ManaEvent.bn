@@ -128,14 +128,27 @@
     <img src="/images/manaevent-logo.svg" alt="ManaEvent Logo">
   </div>
 
+  <header class="bg-yellow-400 py-4 shadow-md relative">
+    <div class="max-w-7xl mx-auto flex items-center justify-between px-6">
+        <!-- Left side: Menu button -->
+        <button id="menuBtn" class="text-white text-3xl focus:outline-none">
+            &#9776;
+        </button>
+
+        <!-- Spacer for layout balance -->
+        <div class="w-8"></div>
+    </div>
+</header>
+
+
   <!-- Hero -->
   <div class="hero">
-    <img src="/images/hero-banner.png" alt="Hero illustration">
+    <img src="/images/NationalDay.png" alt="National Day">
   </div>
 
   <!-- Submit Event -->
   <div style="text-align:center;">
-    <a href="#" class="btn-submit">+ Submit Your Event</a>
+    <a href="{{ route('submit-event') }}" class="btn-submit">+ Submit Your Event</a>
   </div>
 
   <!-- What’s New This Week -->
@@ -163,12 +176,15 @@
     <div class="event-card">
       <img src="/images/theatre.svg" alt="Theatre">
       <p>THEATRE PERFORMANCE</p>
-      <div class="view-more"><a href="#">View more</a></div>
+      <div class="view-more">
+        <a href="{{ route('events.theatre-performance') }}">View more</a>
+      </div>
     </div>
     <div class="event-card">
       <img src="/images/fireworks.svg" alt="Fireworks">
       <p>FIREWORKS SHOW</p>
-      <div class="view-more"><a href="#">View more</a></div>
+      <div class="view-more">
+        <a href="{{ route('events.firework-show') }}">View more</a>
     </div>
   </div>
 
