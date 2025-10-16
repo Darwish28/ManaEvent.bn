@@ -21,8 +21,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAdminAuth();
 
   if (!isAuthenticated) {
-    // Redirect unauthenticated users to /admin/login
-    return <Navigate to="/admin/login" replace />;
+    // Redirect unauthenticated users to /login
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;
@@ -34,7 +34,7 @@ export default function AdminRouter() {
     <AdminAuthProvider>
       <Routes>
         {/* Public route */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/login" element={<AdminLogin />} />
 
         {/* Protected routes under /admin/* */}
         <Route
@@ -54,7 +54,7 @@ export default function AdminRouter() {
         </Route>
 
         {/* Catch all — redirect to dashboard if path doesn’t exist */}
-        <Route path="*" element={<Navigate to="/admin" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </AdminAuthProvider>
   );
