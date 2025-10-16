@@ -29,13 +29,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('events');
-    }
-};
-
-public function show($id)
-{
-    $event = Event::findOrFail($id);
-    return view('events.show', compact('event'));
 }
 
 };
