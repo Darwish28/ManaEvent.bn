@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import EventTable, { Event } from '../Components/EventTable'
+import { useLocation } from 'react-router-dom'
 
 const EventSubmissions = () => {
   const [events, setEvents] = useState<Event[]>([])
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([])
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [showEventModal, setShowEventModal] = useState(false)
   const [modalMode, setModalMode] = useState<'view' | 'edit'>('view')
   const [loading, setLoading] = useState(true)
+
+  // ✅ Filters
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [alphabetical, setAlphabetical] = useState<'az' | 'za'>('az')
+
+  const location = useLocation() // ✅ detect URL query
 
   // ✅ Fetch events from Laravel backend
   useEffect(() => {
@@ -15,12 +24,59 @@ const EventSubmissions = () => {
       .get('/admin/event-submissions')
       .then((res) => {
         setEvents(res.data)
+        setFilteredEvents(res.data)
       })
       .catch((err) => {
         console.error('❌ Failed to fetch events:', err)
       })
       .finally(() => setLoading(false))
   }, [])
+
+  // ✅ Scroll & highlight when URL has ?id=
+  useEffect(() => {
+    if (!filteredEvents.length) return
+
+    const params = new URLSearchParams(location.search)
+    const eventId = params.get('id')
+
+    if (eventId) {
+      setTimeout(() => {
+        const element = document.getElementById(`event-${eventId}`)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          element.classList.add('bg-blue-50', 'ring', 'ring-blue-400')
+          setTimeout(() => {
+            element.classList.remove('bg-blue-50', 'ring', 'ring-blue-400')
+          }, 3000)
+        }
+      }, 500)
+    }
+  }, [location, filteredEvents])
+
+  // ✅ Apply filters dynamically
+  useEffect(() => {
+    let data = [...events]
+
+    if (statusFilter !== 'all') {
+      data = data.filter((e) => e.status === statusFilter)
+    }
+
+    data.sort((a, b) => {
+      const dateA = new Date(a.created_at || '').getTime()
+      const dateB = new Date(b.created_at || '').getTime()
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA
+    })
+
+    data.sort((a, b) => {
+      const nameA = a.event_name?.toLowerCase() || ''
+      const nameB = b.event_name?.toLowerCase() || ''
+      return alphabetical === 'az'
+        ? nameA.localeCompare(nameB)
+        : nameB.localeCompare(nameA)
+    })
+
+    setFilteredEvents(data)
+  }, [statusFilter, sortOrder, alphabetical, events])
 
   // ✅ CRUD functions
   const handleViewEvent = (event: Event) => {
@@ -92,9 +148,42 @@ const EventSubmissions = () => {
         </p>
       </div>
 
-      {/* ✅ Table displaying data */}
+      {/* ✅ Filter Controls */}
+      <div className="flex flex-wrap gap-4 mb-4 items-center">
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="border border-gray-300 rounded-md p-2 text-sm"
+        >
+          <option value="all">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+          <option value="published">Published</option>
+        </select>
+
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+          className="border border-gray-300 rounded-md p-2 text-sm"
+        >
+          <option value="desc">Newest First</option>
+          <option value="asc">Oldest First</option>
+        </select>
+
+        <select
+          value={alphabetical}
+          onChange={(e) => setAlphabetical(e.target.value as 'az' | 'za')}
+          className="border border-gray-300 rounded-md p-2 text-sm"
+        >
+          <option value="az">A–Z</option>
+          <option value="za">Z–A</option>
+        </select>
+      </div>
+
+      {/* ✅ Table */}
       <EventTable
-        events={events}
+        events={filteredEvents}
         onView={handleViewEvent}
         onApprove={handleApproveEvent}
         onReject={handleRejectEvent}
@@ -102,15 +191,17 @@ const EventSubmissions = () => {
         onDelete={handleDeleteEvent}
       />
 
-      {/* ✅ Modal section */}
+      {/* ✅ Event Modal */}
       {showEventModal && selectedEvent && (
         <div className="fixed inset-0 overflow-y-auto z-50">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            {/* Overlay */}
             <div
               className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
               onClick={() => setShowEventModal(false)}
             ></div>
 
+            {/* Modal box */}
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -121,7 +212,6 @@ const EventSubmissions = () => {
                         : 'Edit Event'}
                     </h3>
 
-                    {/* ✅ View Mode */}
                     {modalMode === 'view' ? (
                       <div className="mt-4 text-sm text-gray-700 space-y-2">
                         <p>
@@ -143,7 +233,6 @@ const EventSubmissions = () => {
                         </p>
                       </div>
                     ) : (
-                      /* ✅ Edit Mode */
                       <form className="mt-4 space-y-3">
                         <div>
                           <label className="block text-sm font-medium text-gray-700">
@@ -161,7 +250,6 @@ const EventSubmissions = () => {
                             className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
                           />
                         </div>
-
                         <div>
                           <label className="block text-sm font-medium text-gray-700">
                             Location
@@ -178,7 +266,6 @@ const EventSubmissions = () => {
                             className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
                           />
                         </div>
-
                         <div>
                           <label className="block text-sm font-medium text-gray-700">
                             Description
@@ -201,7 +288,7 @@ const EventSubmissions = () => {
                 </div>
               </div>
 
-              {/* ✅ Modal buttons */}
+              {/* Footer */}
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 {modalMode === 'view' ? (
                   <>
@@ -256,7 +343,6 @@ const EventSubmissions = () => {
                     >
                       Save Changes
                     </button>
-
                     <button
                       type="button"
                       className="w-full inline-flex justify-center rounded-md px-4 py-2 bg-white border text-gray-700 hover:bg-gray-100 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"

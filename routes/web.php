@@ -53,6 +53,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Event Submission Routes 
 use App\Http\Controllers\EventSubmissionController as PublicEventSubmissionController;
 use App\Http\Controllers\Admin\EventSubmissionController as AdminEventSubmissionController;
 // 🟡 Public form submission
@@ -63,6 +65,12 @@ Route::post('/submit-event', [PublicEventSubmissionController::class, 'store'])
 Route::get('/admin/event-submissions', [AdminEventSubmissionController::class, 'index']);
 Route::put('/admin/event-submissions/{id}', [AdminEventSubmissionController::class, 'update']);
 Route::delete('/admin/event-submissions/{id}', [AdminEventSubmissionController::class, 'destroy']);
+
+// Admin Dashboard routes 
+use App\Http\Controllers\Admin\DashboardController;
+
+Route::get('/admin/dashboard/stats', [DashboardController::class, 'stats']);
+
 
 
 

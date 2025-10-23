@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AdminStats from '../Components/AdminStats'
-import { Event } from '../Components/EventTable'
+// Keep the import (in case other parts rely on it), but we won't use it here for state typing.
+import type { Event as EventRow } from '../Components/EventTable'
 
 import {
   CalendarPlusIcon,
@@ -10,78 +11,84 @@ import {
   CheckIcon,
   XIcon,
 } from 'lucide-react'
-// Mock data for dashboard
-const mockStats = {
-  totalSubmissions: 128,
-  pendingApprovals: 23,
-  publishedEvents: 87,
-  registeredUsers: 342,
+
+// ---- Local type for this dashboard (matches what the modal/list expects) ----
+type ModalEvent = {
+  id: string
+  title: string
+  submitterName?: string
+  submitterEmail?: string
+  eventDate?: string // ISO string
+  status: 'pending' | 'approved' | 'rejected' | 'published' | string
+  description?: string
+  location?: string
+  category?: string
+  // allow extra fields without TS errors
+  [key: string]: any
 }
-const mockRecentEvents: Event[] = [
-  {
-    id: '1',
-    title: 'Tech Conference 2023',
-    submitterName: 'John Doe',
-    submitterEmail: 'john@example.com',
-    eventDate: '2023-11-15T09:00:00',
-    status: 'pending',
-    description:
-      'Annual tech conference featuring the latest technologies and innovations.',
-    location: 'San Francisco Convention Center',
-    category: 'Technology',
-  },
-  {
-    id: '2',
-    title: 'Art Exhibition: Modern Masters',
-    submitterName: 'Jane Smith',
-    submitterEmail: 'jane@example.com',
-    eventDate: '2023-11-20T10:00:00',
-    status: 'approved',
-    description: 'Exhibition showcasing works from contemporary artists.',
-    location: 'Downtown Art Gallery',
-    category: 'Art',
-  },
-  {
-    id: '3',
-    title: 'Community Cleanup Day',
-    submitterName: 'Robert Johnson',
-    submitterEmail: 'robert@example.com',
-    eventDate: '2023-11-25T08:00:00',
-    status: 'published',
-    description: 'Volunteer event to clean up local parks and streets.',
-    location: 'Riverside Park',
-    category: 'Community',
-  },
-  {
-    id: '4',
-    title: 'Charity Gala Dinner',
-    submitterName: 'Emily Wilson',
-    submitterEmail: 'emily@example.com',
-    eventDate: '2023-12-01T18:30:00',
-    status: 'pending',
-    description: "Annual fundraising dinner for local children's hospital.",
-    location: 'Grand Hotel Ballroom',
-    category: 'Charity',
-  },
-  {
-    id: '5',
-    title: 'Winter Music Festival',
-    submitterName: 'Michael Brown',
-    submitterEmail: 'michael@example.com',
-    eventDate: '2023-12-10T16:00:00',
-    status: 'rejected',
-    description: 'Outdoor music festival featuring local bands.',
-    location: 'City Park Amphitheater',
-    category: 'Music',
-  },
-]
+
 const Dashboard = () => {
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [stats, setStats] = useState({
+    totalSubmissions: 0,
+    pendingApprovals: 0,
+    publishedEvents: 0,
+    registeredUsers: 0,
+  })
+  const [recentEvents, setRecentEvents] = useState<ModalEvent[]>([])
+  const [selectedEvent, setSelectedEvent] = useState<ModalEvent | null>(null)
   const [showEventModal, setShowEventModal] = useState(false)
-  const handleViewEvent = (event: Event) => {
+
+  useEffect(() => {
+    // Fetch real stats + recent submissions from Laravel
+    fetch('/admin/dashboard/stats')
+      .then((res) => res.json())
+      .then((data) => {
+        setStats({
+          totalSubmissions: Number(data?.totalSubmissions ?? 0),
+          pendingApprovals: Number(data?.pendingApprovals ?? 0),
+          publishedEvents: Number(data?.publishedEvents ?? 0),
+          registeredUsers: Number(data?.registeredUsers ?? 0),
+        })
+
+        // Normalize backend rows to the fields your UI expects
+        const normalized: ModalEvent[] = (data?.recentSubmissions ?? []).map((e: any) => ({
+  id: String(e.id),
+  // 🩵 match your SQLite table fields
+  title: e.event_name ?? 'Untitled',
+  submitterName: e.name ?? 'Unknown',
+  submitterEmail: e.email ?? '',
+  eventDate: e.start_time ?? e.created_at ?? null,
+  status: e.status ?? 'pending',
+  description: e.description ?? '',
+  location: e.location ?? 'Not specified',
+  category: e.category ?? 'General',
+  ...e,
+}))
+
+        setRecentEvents(normalized)
+      })
+      .catch((err) => console.error('Dashboard fetch error:', err))
+  }, [])
+
+  const handleViewEvent = (event: ModalEvent) => {
     setSelectedEvent(event)
     setShowEventModal(true)
   }
+
+  // small helpers to avoid runtime errors if date is missing
+  const fmtDate = (iso?: string) => {
+    if (!iso) return '—'
+    const d = new Date(iso)
+    return isNaN(d.getTime()) ? '—' : d.toLocaleDateString()
+  }
+  const fmtTime = (iso?: string) => {
+    if (!iso) return '—'
+    const d = new Date(iso)
+    return isNaN(d.getTime())
+      ? '—'
+      : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }
+
   return (
     <div>
       <div className="mb-6">
@@ -90,13 +97,15 @@ const Dashboard = () => {
           Overview of event submissions and system statistics
         </p>
       </div>
-      {/* Stats Cards */}
+
+      {/* Stats Cards (live) */}
       <AdminStats
-        totalSubmissions={mockStats.totalSubmissions}
-        pendingApprovals={mockStats.pendingApprovals}
-        publishedEvents={mockStats.publishedEvents}
-        registeredUsers={mockStats.registeredUsers}
+        totalSubmissions={stats.totalSubmissions}
+        pendingApprovals={stats.pendingApprovals}
+        publishedEvents={stats.publishedEvents}
+        registeredUsers={stats.registeredUsers}
       />
+
       {/* Quick Actions */}
       <div className="mt-8 mb-6">
         <h2 className="text-lg font-medium text-gray-900">Quick Actions</h2>
@@ -119,6 +128,7 @@ const Dashboard = () => {
               </div>
             </div>
           </Link>
+
           <Link
             to="/admin/submissions"
             className="bg-white overflow-hidden shadow rounded-lg p-6 hover:bg-yellow-50 transition-colors"
@@ -132,11 +142,12 @@ const Dashboard = () => {
                   Review Submissions
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
-                  {mockStats.pendingApprovals} events pending review
+                  {stats.pendingApprovals} events pending review
                 </p>
               </div>
             </div>
           </Link>
+
           <Link
             to="/admin/users"
             className="bg-white overflow-hidden shadow rounded-lg p-6 hover:bg-purple-50 transition-colors"
@@ -150,27 +161,28 @@ const Dashboard = () => {
                   Manage Users
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
-                  {mockStats.registeredUsers} registered users
+                  {stats.registeredUsers} registered users
                 </p>
               </div>
             </div>
           </Link>
         </div>
       </div>
-      {/* Recent Submissions */}
+
+      {/* Recent Submissions (live) */}
       <div className="mt-8">
         <h2 className="text-lg font-medium text-gray-900 mb-4">
           Recent Event Submissions
         </h2>
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <ul className="divide-y divide-gray-200">
-            {mockRecentEvents.map((event) => (
+            {recentEvents.map((event) => (
               <li key={event.id}>
                 <div className="px-4 py-4 sm:px-6 hover:bg-gray-50">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <p className="text-sm font-medium text-blue-600 truncate">
-                        {event.title}
+                         <Link to={`/admin/submissions?id=${event.id}`}>{event.title}</Link>
                       </p>
                       <div className="ml-2 flex-shrink-0">
                         {event.status === 'pending' && (
@@ -217,16 +229,12 @@ const Dashboard = () => {
                   <div className="mt-2 sm:flex sm:justify-between">
                     <div className="sm:flex">
                       <p className="flex items-center text-sm text-gray-500">
-                        Submitted by {event.submitterName}
+                        Submitted by {event.submitterName || 'Unknown'}
                       </p>
                     </div>
                     <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                       <p>
-                        {new Date(event.eventDate).toLocaleDateString()} at{' '}
-                        {new Date(event.eventDate).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                        {fmtDate(event.eventDate)} at {fmtTime(event.eventDate)}
                       </p>
                     </div>
                   </div>
@@ -246,6 +254,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
       {/* Event Detail Modal */}
       {showEventModal && selectedEvent && (
         <div className="fixed inset-0 overflow-y-auto z-50">
@@ -254,6 +263,7 @@ const Dashboard = () => {
               className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
               onClick={() => setShowEventModal(false)}
             ></div>
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -261,52 +271,63 @@ const Dashboard = () => {
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                       {selectedEvent.title}
                     </h3>
+
                     <div className="mt-4">
                       <p className="text-sm text-gray-500 mb-2">
                         <strong>Submitter:</strong>{' '}
-                        {selectedEvent.submitterName} (
-                        {selectedEvent.submitterEmail})
+                        {selectedEvent.submitterName || 'Unknown'} (
+                        {selectedEvent.submitterEmail || '—'})
                       </p>
+
                       <p className="text-sm text-gray-500 mb-2">
                         <strong>Date:</strong>{' '}
-                        {new Date(selectedEvent.eventDate).toLocaleDateString()}{' '}
-                        at{' '}
-                        {new Date(selectedEvent.eventDate).toLocaleTimeString(
-                          [],
-                          {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          },
-                        )}
+                        {fmtDate(selectedEvent.eventDate)} at{' '}
+                        {fmtTime(selectedEvent.eventDate)}
                       </p>
+
                       <p className="text-sm text-gray-500 mb-2">
-                        <strong>Location:</strong> {selectedEvent.location}
+                        <strong>Location:</strong>{' '}
+                        {selectedEvent.location || 'Not specified'}
                       </p>
+
                       <p className="text-sm text-gray-500 mb-2">
-                        <strong>Category:</strong> {selectedEvent.category}
+                        <strong>Category:</strong>{' '}
+                        {selectedEvent.category || 'General'}
                       </p>
+
                       <p className="text-sm text-gray-500 mb-2">
                         <strong>Status:</strong>{' '}
                         <span
                           className={`px-2 py-1 text-xs font-medium rounded-full 
-                          ${selectedEvent.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : selectedEvent.status === 'approved' ? 'bg-green-100 text-green-800' : selectedEvent.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}
+                          ${
+                            selectedEvent.status === 'pending'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : selectedEvent.status === 'approved'
+                              ? 'bg-green-100 text-green-800'
+                              : selectedEvent.status === 'rejected'
+                              ? 'bg-red-100 text-red-800'
+                              : 'bg-blue-100 text-blue-800'
+                          }`}
                         >
-                          {selectedEvent.status.charAt(0).toUpperCase() +
-                            selectedEvent.status.slice(1)}
+                          {selectedEvent.status
+                            .charAt(0)
+                            .toUpperCase() + selectedEvent.status.slice(1)}
                         </span>
                       </p>
+
                       <div className="mt-4">
                         <p className="text-sm text-gray-500 mb-1">
                           <strong>Description:</strong>
                         </p>
                         <p className="text-sm text-gray-700">
-                          {selectedEvent.description}
+                          {selectedEvent.description || '—'}
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
@@ -315,6 +336,7 @@ const Dashboard = () => {
                 >
                   Close
                 </button>
+
                 {selectedEvent.status === 'pending' && (
                   <>
                     <button
@@ -323,6 +345,7 @@ const Dashboard = () => {
                     >
                       Approve
                     </button>
+
                     <button
                       type="button"
                       className="mt-3 sm:mt-0 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
@@ -339,4 +362,5 @@ const Dashboard = () => {
     </div>
   )
 }
+
 export default Dashboard

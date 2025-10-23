@@ -118,9 +118,15 @@ const EventTable = ({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {currentEvents.length > 0 ? (
-              currentEvents.map((event) => (
-                <tr key={event.id} className="hover:bg-gray-50">
+  {currentEvents.length > 0 ? (
+    currentEvents.map((event) => (
+      // ✅ Added the id attribute for smooth scroll + highlight
+      <tr
+        key={event.id}
+        id={`event-${event.id}`}
+        className="hover:bg-gray-50 transition-colors duration-200"
+      >
+
                   {/* Event */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
