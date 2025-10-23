@@ -39,7 +39,9 @@
         <div class="max-w-xl w-full bg-white p-8 rounded-2xl shadow-lg">
             <h2 class="text-2xl font-extrabold text-gray-800 mb-6 text-center">Submit Your Event</h2>
 
-            <form id="submitEventForm" class="space-y-4" enctype="multipart/form-data">
+   <form id="submitEventForm" action="{{ route('submit.event') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+    @csrf
+
                 {{-- Name --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
@@ -117,18 +119,6 @@
     </footer>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('submitEventForm');
-    const success = document.getElementById('successMessage');
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        form.classList.add('hidden');
-        success.classList.remove('hidden');
-    });
-});
-</script>
 
 @section('scripts')
 <script>

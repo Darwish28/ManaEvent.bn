@@ -1,198 +1,88 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import EventTable, { Event } from '../Components/EventTable'
 
-// Mock data for events
-const mockEvents: Event[] = [
-  {
-    id: '1',
-    title: 'Tech Conference 2023',
-    submitterName: 'John Doe',
-    submitterEmail: 'john@example.com',
-    eventDate: '2023-11-15T09:00:00',
-    status: 'pending',
-    description:
-      'Annual tech conference featuring the latest technologies and innovations.',
-    location: 'San Francisco Convention Center',
-    category: 'Technology',
-  },
-  {
-    id: '2',
-    title: 'Art Exhibition: Modern Masters',
-    submitterName: 'Jane Smith',
-    submitterEmail: 'jane@example.com',
-    eventDate: '2023-11-20T10:00:00',
-    status: 'approved',
-    description: 'Exhibition showcasing works from contemporary artists.',
-    location: 'Downtown Art Gallery',
-    category: 'Art',
-  },
-  {
-    id: '3',
-    title: 'Community Cleanup Day',
-    submitterName: 'Robert Johnson',
-    submitterEmail: 'robert@example.com',
-    eventDate: '2023-11-25T08:00:00',
-    status: 'published',
-    description: 'Volunteer event to clean up local parks and streets.',
-    location: 'Riverside Park',
-    category: 'Community',
-  },
-  {
-    id: '4',
-    title: 'Charity Gala Dinner',
-    submitterName: 'Emily Wilson',
-    submitterEmail: 'emily@example.com',
-    eventDate: '2023-12-01T18:30:00',
-    status: 'pending',
-    description: "Annual fundraising dinner for local children's hospital.",
-    location: 'Grand Hotel Ballroom',
-    category: 'Charity',
-  },
-  {
-    id: '5',
-    title: 'Winter Music Festival',
-    submitterName: 'Michael Brown',
-    submitterEmail: 'michael@example.com',
-    eventDate: '2023-12-10T16:00:00',
-    status: 'rejected',
-    description: 'Outdoor music festival featuring local bands.',
-    location: 'City Park Amphitheater',
-    category: 'Music',
-  },
-  {
-    id: '6',
-    title: 'Business Networking Lunch',
-    submitterName: 'Sarah Johnson',
-    submitterEmail: 'sarah@example.com',
-    eventDate: '2023-12-05T12:30:00',
-    status: 'pending',
-    description: 'Monthly networking event for local business professionals.',
-    location: 'Downtown Business Center',
-    category: 'Business',
-  },
-  {
-    id: '7',
-    title: 'Photography Workshop',
-    submitterName: 'David Lee',
-    submitterEmail: 'david@example.com',
-    eventDate: '2023-12-08T14:00:00',
-    status: 'approved',
-    description:
-      'Hands-on workshop for beginner and intermediate photographers.',
-    location: 'Community Arts Center',
-    category: 'Education',
-  },
-  {
-    id: '8',
-    title: 'Yoga in the Park',
-    submitterName: 'Lisa Chen',
-    submitterEmail: 'lisa@example.com',
-    eventDate: '2023-12-12T08:00:00',
-    status: 'published',
-    description: 'Free community yoga session for all experience levels.',
-    location: 'Central Park',
-    category: 'Fitness',
-  },
-  {
-    id: '9',
-    title: 'Holiday Craft Fair',
-    submitterName: 'Jennifer Adams',
-    submitterEmail: 'jennifer@example.com',
-    eventDate: '2023-12-15T10:00:00',
-    status: 'pending',
-    description:
-      'Annual fair featuring handmade crafts and gifts from local artisans.',
-    location: 'Community Center',
-    category: 'Shopping',
-  },
-  {
-    id: '10',
-    title: 'Film Festival',
-    submitterName: 'Mark Wilson',
-    submitterEmail: 'mark@example.com',
-    eventDate: '2023-12-18T18:00:00',
-    status: 'approved',
-    description: 'Showcasing independent films from around the world.',
-    location: 'City Cinema',
-    category: 'Entertainment',
-  },
-  {
-    id: '11',
-    title: 'Science Fair for Kids',
-    submitterName: 'Amanda Torres',
-    submitterEmail: 'amanda@example.com',
-    eventDate: '2023-12-20T09:00:00',
-    status: 'pending',
-    description:
-      'Interactive science exhibits and demonstrations for children aged 5-12.',
-    location: 'Science Museum',
-    category: 'Education',
-  },
-  {
-    id: '12',
-    title: "New Year's Eve Gala",
-    submitterName: 'Richard Brown',
-    submitterEmail: 'richard@example.com',
-    eventDate: '2023-12-31T20:00:00',
-    status: 'approved',
-    description:
-      'Elegant celebration with dinner, dancing, and midnight champagne toast.',
-    location: 'Grand Ballroom',
-    category: 'Holiday',
-  },
-]
 const EventSubmissions = () => {
-  const [events, setEvents] = useState<Event[]>(mockEvents)
+  const [events, setEvents] = useState<Event[]>([])
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [showEventModal, setShowEventModal] = useState(false)
   const [modalMode, setModalMode] = useState<'view' | 'edit'>('view')
+  const [loading, setLoading] = useState(true)
+
+  // ✅ Fetch events from Laravel backend
+  useEffect(() => {
+    axios
+      .get('/admin/event-submissions')
+      .then((res) => {
+        setEvents(res.data)
+      })
+      .catch((err) => {
+        console.error('❌ Failed to fetch events:', err)
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  // ✅ CRUD functions
   const handleViewEvent = (event: Event) => {
     setSelectedEvent(event)
     setModalMode('view')
     setShowEventModal(true)
   }
+
   const handleEditEvent = (event: Event) => {
     setSelectedEvent(event)
     setModalMode('edit')
     setShowEventModal(true)
   }
-  const handleApproveEvent = (id: string) => {
-    setEvents(
-      events.map((event) =>
-        event.id === id
-          ? {
-              ...event,
-              status: 'approved',
-            }
-          : event,
-      ),
-    )
-  }
-  const handleRejectEvent = (id: string) => {
-    setEvents(
-      events.map((event) =>
-        event.id === id
-          ? {
-              ...event,
-              status: 'rejected',
-            }
-          : event,
-      ),
-    )
-  }
-  const handleDeleteEvent = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this event?')) {
-      setEvents(events.filter((event) => event.id !== id))
+
+  const handleApproveEvent = async (id: number) => {
+    try {
+      await axios.put(`/admin/event-submissions/${id}`, { status: 'approved' })
+      setEvents(events.map((e) => (e.id === id ? { ...e, status: 'approved' } : e)))
+    } catch (err) {
+      console.error('❌ Approve failed:', err)
     }
   }
-  const handleSaveEvent = (updatedEvent: Event) => {
-    setEvents(
-      events.map((event) =>
-        event.id === updatedEvent.id ? updatedEvent : event,
-      ),
-    )
-    setShowEventModal(false)
+
+  const handleRejectEvent = async (id: number) => {
+    try {
+      await axios.put(`/admin/event-submissions/${id}`, { status: 'rejected' })
+      setEvents(events.map((e) => (e.id === id ? { ...e, status: 'rejected' } : e)))
+    } catch (err) {
+      console.error('❌ Reject failed:', err)
+    }
   }
+
+  const handleDeleteEvent = async (id: number) => {
+    if (window.confirm('Are you sure you want to delete this event?')) {
+      try {
+        await axios.delete(`/admin/event-submissions/${id}`)
+        setEvents(events.filter((e) => e.id !== id))
+      } catch (err) {
+        console.error('❌ Delete failed:', err)
+      }
+    }
+  }
+
+  const handleSaveEvent = async (updatedEvent: Event) => {
+    try {
+      await axios.put(`/admin/event-submissions/${updatedEvent.id}`, updatedEvent)
+      setEvents(events.map((e) => (e.id === updatedEvent.id ? updatedEvent : e)))
+      setShowEventModal(false)
+    } catch (err) {
+      console.error('❌ Save failed:', err)
+    }
+  }
+
+  // ✅ Loading state
+  if (loading) {
+    return (
+      <div className="p-6 text-center text-gray-500">
+        Loading event submissions...
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="mb-6">
@@ -201,6 +91,8 @@ const EventSubmissions = () => {
           Manage and review all user-submitted events
         </p>
       </div>
+
+      {/* ✅ Table displaying data */}
       <EventTable
         events={events}
         onView={handleViewEvent}
@@ -209,7 +101,8 @@ const EventSubmissions = () => {
         onEdit={handleEditEvent}
         onDelete={handleDeleteEvent}
       />
-      {/* Event Detail/Edit Modal */}
+
+      {/* ✅ Modal section */}
       {showEventModal && selectedEvent && (
         <div className="fixed inset-0 overflow-y-auto z-50">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -217,200 +110,122 @@ const EventSubmissions = () => {
               className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
               onClick={() => setShowEventModal(false)}
             ></div>
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                       {modalMode === 'view'
-                        ? selectedEvent.title
+                        ? selectedEvent.event_name
                         : 'Edit Event'}
                     </h3>
+
+                    {/* ✅ View Mode */}
                     {modalMode === 'view' ? (
-                      <div className="mt-4">
-                        <p className="text-sm text-gray-500 mb-2">
-                          <strong>Submitter:</strong>{' '}
-                          {selectedEvent.submitterName} (
-                          {selectedEvent.submitterEmail})
+                      <div className="mt-4 text-sm text-gray-700 space-y-2">
+                        <p>
+                          <strong>Submitter:</strong> {selectedEvent.name} (
+                          {selectedEvent.email})
                         </p>
-                        <p className="text-sm text-gray-500 mb-2">
-                          <strong>Date:</strong>{' '}
-                          {new Date(
-                            selectedEvent.eventDate,
-                          ).toLocaleDateString()}{' '}
-                          at{' '}
-                          {new Date(selectedEvent.eventDate).toLocaleTimeString(
-                            [],
-                            {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            },
-                          )}
+                        <p>
+                          <strong>Phone:</strong> {selectedEvent.phone}
                         </p>
-                        <p className="text-sm text-gray-500 mb-2">
+                        <p>
                           <strong>Location:</strong> {selectedEvent.location}
                         </p>
-                        <p className="text-sm text-gray-500 mb-2">
-                          <strong>Category:</strong> {selectedEvent.category}
+                        <p>
+                          <strong>Status:</strong> {selectedEvent.status}
                         </p>
-                        <p className="text-sm text-gray-500 mb-2">
-                          <strong>Status:</strong>{' '}
-                          <span
-                            className={`px-2 py-1 text-xs font-medium rounded-full 
-                            ${selectedEvent.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : selectedEvent.status === 'approved' ? 'bg-green-100 text-green-800' : selectedEvent.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}
-                          >
-                            {selectedEvent.status.charAt(0).toUpperCase() +
-                              selectedEvent.status.slice(1)}
-                          </span>
+                        <p>
+                          <strong>Description:</strong>{' '}
+                          {selectedEvent.description}
                         </p>
-                        <div className="mt-4">
-                          <p className="text-sm text-gray-500 mb-1">
-                            <strong>Description:</strong>
-                          </p>
-                          <p className="text-sm text-gray-700">
-                            {selectedEvent.description}
-                          </p>
-                        </div>
                       </div>
                     ) : (
-                      <div className="mt-4">
-                        <form className="space-y-4">
-                          <div>
-                            <label
-                              htmlFor="title"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Title
-                            </label>
-                            <input
-                              type="text"
-                              id="title"
-                              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                              defaultValue={selectedEvent.title}
-                            />
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label
-                                htmlFor="date"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                Date
-                              </label>
-                              <input
-                                type="date"
-                                id="date"
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                defaultValue={
-                                  selectedEvent.eventDate.split('T')[0]
-                                }
-                              />
-                            </div>
-                            <div>
-                              <label
-                                htmlFor="time"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                Time
-                              </label>
-                              <input
-                                type="time"
-                                id="time"
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                defaultValue={selectedEvent.eventDate
-                                  .split('T')[1]
-                                  .substring(0, 5)}
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <label
-                              htmlFor="location"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Location
-                            </label>
-                            <input
-                              type="text"
-                              id="location"
-                              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                              defaultValue={selectedEvent.location}
-                            />
-                          </div>
-                          <div>
-                            <label
-                              htmlFor="category"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Category
-                            </label>
-                            <input
-                              type="text"
-                              id="category"
-                              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                              defaultValue={selectedEvent.category}
-                            />
-                          </div>
-                          <div>
-                            <label
-                              htmlFor="status"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Status
-                            </label>
-                            <select
-                              id="status"
-                              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                              defaultValue={selectedEvent.status}
-                            >
-                              <option value="pending">Pending</option>
-                              <option value="approved">Approved</option>
-                              <option value="rejected">Rejected</option>
-                              <option value="published">Published</option>
-                            </select>
-                          </div>
-                          <div>
-                            <label
-                              htmlFor="description"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Description
-                            </label>
-                            <textarea
-                              id="description"
-                              rows={4}
-                              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                              defaultValue={selectedEvent.description}
-                            ></textarea>
-                          </div>
-                        </form>
-                      </div>
+                      /* ✅ Edit Mode */
+                      <form className="mt-4 space-y-3">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Event Name
+                          </label>
+                          <input
+                            type="text"
+                            value={selectedEvent.event_name}
+                            onChange={(e) =>
+                              setSelectedEvent({
+                                ...selectedEvent,
+                                event_name: e.target.value,
+                              })
+                            }
+                            className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Location
+                          </label>
+                          <input
+                            type="text"
+                            value={selectedEvent.location ?? ''}
+                            onChange={(e) =>
+                              setSelectedEvent({
+                                ...selectedEvent,
+                                location: e.target.value,
+                              })
+                            }
+                            className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Description
+                          </label>
+                          <textarea
+                            rows={4}
+                            value={selectedEvent.description ?? ''}
+                            onChange={(e) =>
+                              setSelectedEvent({
+                                ...selectedEvent,
+                                description: e.target.value,
+                              })
+                            }
+                            className="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                          />
+                        </div>
+                      </form>
                     )}
                   </div>
                 </div>
               </div>
+
+              {/* ✅ Modal buttons */}
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 {modalMode === 'view' ? (
                   <>
                     <button
                       type="button"
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                      className="w-full inline-flex justify-center rounded-md px-4 py-2 bg-blue-600 text-white font-medium hover:bg-blue-700 sm:ml-3 sm:w-auto sm:text-sm"
                       onClick={() => setShowEventModal(false)}
                     >
                       Close
                     </button>
+
                     <button
                       type="button"
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                      className="w-full inline-flex justify-center rounded-md px-4 py-2 bg-white border text-gray-700 hover:bg-gray-100 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                       onClick={() => setModalMode('edit')}
                     >
                       Edit
                     </button>
+
                     {selectedEvent.status === 'pending' && (
                       <>
                         <button
                           type="button"
-                          className="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                          className="w-full inline-flex justify-center rounded-md px-4 py-2 bg-green-600 text-white font-medium hover:bg-green-700 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                           onClick={() => {
                             handleApproveEvent(selectedEvent.id)
                             setShowEventModal(false)
@@ -418,9 +233,10 @@ const EventSubmissions = () => {
                         >
                           Approve
                         </button>
+
                         <button
                           type="button"
-                          className="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                          className="w-full inline-flex justify-center rounded-md px-4 py-2 bg-red-600 text-white font-medium hover:bg-red-700 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                           onClick={() => {
                             handleRejectEvent(selectedEvent.id)
                             setShowEventModal(false)
@@ -435,14 +251,15 @@ const EventSubmissions = () => {
                   <>
                     <button
                       type="button"
-                      className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-                      onClick={() => handleSaveEvent(selectedEvent)}
+                      className="w-full inline-flex justify-center rounded-md px-4 py-2 bg-blue-600 text-white font-medium hover:bg-blue-700 sm:ml-3 sm:w-auto sm:text-sm"
+                      onClick={() => handleSaveEvent(selectedEvent!)}
                     >
                       Save Changes
                     </button>
+
                     <button
                       type="button"
-                      className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                      className="w-full inline-flex justify-center rounded-md px-4 py-2 bg-white border text-gray-700 hover:bg-gray-100 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                       onClick={() => setModalMode('view')}
                     >
                       Cancel
@@ -457,4 +274,5 @@ const EventSubmissions = () => {
     </div>
   )
 }
+
 export default EventSubmissions

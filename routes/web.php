@@ -27,7 +27,6 @@ Route::get('/home', function () {
     return view('home');
 })->name('home');
 
-Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
 
 
 Route::view('dashboard', 'dashboard')
@@ -54,6 +53,19 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+use App\Http\Controllers\EventSubmissionController as PublicEventSubmissionController;
+use App\Http\Controllers\Admin\EventSubmissionController as AdminEventSubmissionController;
+// 🟡 Public form submission
+Route::post('/submit-event', [PublicEventSubmissionController::class, 'store'])
+    ->name('submit.event');
+
+// 🔵 Admin routes
+Route::get('/admin/event-submissions', [AdminEventSubmissionController::class, 'index']);
+Route::put('/admin/event-submissions/{id}', [AdminEventSubmissionController::class, 'update']);
+Route::delete('/admin/event-submissions/{id}', [AdminEventSubmissionController::class, 'destroy']);
+
+
+
 
 // Admin routes
 Route::get('/admin/{any?}', function () {
