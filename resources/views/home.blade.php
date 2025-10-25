@@ -48,17 +48,47 @@
       cursor: pointer;
     }
 
-    /* ---------- Hero Section ---------- */
-    .hero {
-      text-align: center;
-      margin: 1.5rem 0;
-    }
-
-    .hero img {
-      max-width: 90%;
+    /* ---------- Hero Slider ---------- */
+    .hero-slider {
+      position: relative;
+      max-width: 100%;
+      margin: 1.5rem auto;
+      overflow: hidden;
       border-radius: 14px;
       box-shadow: var(--shadow);
     }
+
+    .hero-slide {
+      display: none;
+      width: 100%;
+      transition: 0.5s;
+    }
+
+    .hero-slide img {
+      width: 100%;
+      display: block;
+      border-radius: 14px;
+    }
+
+    .hero-slide.active {
+      display: block;
+    }
+
+    .hero-slider .prev, .hero-slider .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.4);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 50%;
+      font-size: 1.5rem;
+    }
+
+    .hero-slider .prev { left: 10px; }
+    .hero-slider .next { right: 10px; }
 
     /* ---------- Submit Button ---------- */
     .btn-submit {
@@ -123,9 +153,20 @@
     }
 
     .event-card p {
-      margin: 0.8rem 1rem 0.5rem;
+      margin: 0.8rem 1rem 0.2rem;
       font-size: 1rem;
       font-weight: 600;
+    }
+
+    .event-info {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin: 0 1rem 0.5rem;
+    }
+
+    .event-info span {
+      display: inline-block;
+      margin-right: 0.5rem;
     }
 
     .view-more {
@@ -156,7 +197,7 @@
 
     /* ---------- Responsive ---------- */
     @media (max-width: 768px) {
-      .hero img {
+      .hero-slide img {
         max-width: 95%;
       }
 
@@ -184,9 +225,20 @@
     <div style="width:32px;"></div>
   </div>
 
-  <!-- Hero -->
-  <div class="hero">
-    <img src="/images/NationalDay.png" alt="National Day">
+  <!-- Hero Slider -->
+  <div class="hero-slider">
+    <div class="hero-slide active">
+      <img src="/images/NationalDay.png" alt="National Day">
+    </div>
+    <div class="hero-slide">
+      <img src="/images/FoodFestivalBanner.png" alt="Food Festival Banner">
+    </div>
+    <div class="hero-slide">
+      <img src="/images/FireworksBanner.png" alt="Fireworks Show Banner">
+    </div>
+
+    <button class="prev">&#10094;</button>
+    <button class="next">&#10095;</button>
   </div>
 
   <!-- Submit Button -->
@@ -200,12 +252,18 @@
     <div class="event-card">
       <img src="/images/foodfestival.svg" alt="Food Festival">
       <p>Food Festival</p>
+      <div class="event-info">
+        <span>📅 28 Oct 2025</span> • <span>📍 Brunei City Center</span>
+      </div>
       <div class="view-more"><a href="{{ route('events.food-festival') }}">View more →</a></div>
     </div>
 
     <div class="event-card">
       <img src="/images/donation.svg" alt="Donation">
       <p>Donation Drive</p>
+      <div class="event-info">
+        <span>📅 30 Oct 2025</span> • <span>📍 Kampong Ayer</span>
+      </div>
       <div class="view-more"><a href="{{ route('events.donation') }}">View more →</a></div>
     </div>
   </div>
@@ -216,12 +274,18 @@
     <div class="event-card">
       <img src="/images/theatre.svg" alt="Theatre Performance">
       <p>Theatre Performance</p>
+      <div class="event-info">
+        <span>📅 5 Nov 2025</span> • <span>📍 Royal Theatre</span>
+      </div>
       <div class="view-more"><a href="{{ route('events.theatre-performance') }}">View more →</a></div>
     </div>
 
     <div class="event-card">
       <img src="/images/fireworks.svg" alt="Fireworks Show">
       <p>Fireworks Show</p>
+      <div class="event-info">
+        <span>📅 10 Nov 2025</span> • <span>📍 Waterfront</span>
+      </div>
       <div class="view-more"><a href="{{ route('events.firework-show') }}">View more →</a></div>
     </div>
   </div>
@@ -230,6 +294,33 @@
   <footer>
     © 2025 ManaEvent.bn — Bringing Brunei’s events together.
   </footer>
+
+  <!-- Hero Slider JS -->
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.hero-slide');
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      slides[index].classList.add('active');
+    }
+
+    document.querySelector('.next').addEventListener('click', () => {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      showSlide(currentSlide);
+    });
+
+    document.querySelector('.prev').addEventListener('click', () => {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      showSlide(currentSlide);
+    });
+
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      showSlide(currentSlide);
+    }, 5000);
+  </script>
 
 </body>
 </html>
