@@ -16,7 +16,7 @@ const EventSubmissions = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [alphabetical, setAlphabetical] = useState<'az' | 'za'>('az')
 
-  const location = useLocation() // ✅ detect URL query
+  const location = useLocation()
 
   // ✅ Fetch events from Laravel backend
   useEffect(() => {
@@ -130,6 +130,21 @@ const EventSubmissions = () => {
     }
   }
 
+  // ✅ Pre-process image paths for the modal
+  let imageList: string[] = []
+  if (selectedEvent?.image_path) {
+    if (Array.isArray(selectedEvent.image_path)) {
+      imageList = selectedEvent.image_path
+    } else if (typeof selectedEvent.image_path === 'string') {
+      try {
+        const parsed = JSON.parse(selectedEvent.image_path)
+        imageList = Array.isArray(parsed) ? parsed : [selectedEvent.image_path]
+      } catch {
+        imageList = [selectedEvent.image_path]
+      }
+    }
+  }
+
   // ✅ Loading state
   if (loading) {
     return (
@@ -195,13 +210,11 @@ const EventSubmissions = () => {
       {showEventModal && selectedEvent && (
         <div className="fixed inset-0 overflow-y-auto z-50">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            {/* Overlay */}
             <div
               className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
               onClick={() => setShowEventModal(false)}
             ></div>
 
-            {/* Modal box */}
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -218,19 +231,24 @@ const EventSubmissions = () => {
                           <strong>Submitter:</strong> {selectedEvent.name} (
                           {selectedEvent.email})
                         </p>
-                        <p>
-                          <strong>Phone:</strong> {selectedEvent.phone}
-                        </p>
-                        <p>
-                          <strong>Location:</strong> {selectedEvent.location}
-                        </p>
-                        <p>
-                          <strong>Status:</strong> {selectedEvent.status}
-                        </p>
-                        <p>
-                          <strong>Description:</strong>{' '}
-                          {selectedEvent.description}
-                        </p>
+                        <p><strong>Phone:</strong> {selectedEvent.phone}</p>
+                        <p><strong>Location:</strong> {selectedEvent.location}</p>
+                        <p><strong>Status:</strong> {selectedEvent.status}</p>
+                        <p><strong>Description:</strong> {selectedEvent.description}</p>
+
+                        {/* ✅ Show images */}
+                        {imageList.length > 0 && (
+                          <div className="grid grid-cols-2 gap-2 mt-3">
+                            {imageList.map((img, i) => (
+                              <img
+                                key={i}
+                                src={`/storage/${img}`}
+                                alt={`event-${i}`}
+                                className="rounded-lg shadow-md max-h-48 object-cover"
+                              />
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <form className="mt-4 space-y-3">
@@ -288,7 +306,6 @@ const EventSubmissions = () => {
                 </div>
               </div>
 
-              {/* Footer */}
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 {modalMode === 'view' ? (
                   <>

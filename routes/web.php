@@ -14,7 +14,6 @@ Route::view('/events/firework-show', 'events.firework-show')->name('events.firew
 Route::view('/about', 'about')->name('about');
 Route::view('/faq', 'faq')->name('faq');
 Route::view('/settings', 'settings')->name('settings');
-Route::view('/submit-event', 'submit-event')->name('submit-event');
 Route::view('/', 'home')->name('home');
 Route::view('/contact', 'contact')->name('contact');
 
@@ -71,6 +70,16 @@ use App\Http\Controllers\Admin\DashboardController;
 
 Route::get('/admin/dashboard/stats', [DashboardController::class, 'stats']);
 
+//Submit Your Event routes
+use App\Http\Controllers\SubmitYourEventController;
+
+// Show the form
+Route::get('/submit-event', [SubmitYourEventController::class, 'create'])
+    ->name('submit.event.form');
+
+// Handle form submission
+Route::post('/submit-event', [SubmitYourEventController::class, 'store'])
+    ->name('submit.event');
 
 
 

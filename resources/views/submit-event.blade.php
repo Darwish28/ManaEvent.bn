@@ -25,7 +25,7 @@
             <a href="{{ route('about') }}" class="block hover:text-yellow-500 font-medium">ℹ️ About Us</a>
             <a href="{{ route('faq') }}" class="block hover:text-yellow-500 font-medium">❓ FAQ</a>
             <a href="{{ route('contact') }}" class="block hover:text-yellow-500 font-medium">📞 Contact Us</a>
-            <a href="{{ route('submit-event') }}" class="block hover:text-yellow-500 font-medium">📅 Submit Your Event!</a>
+            <a href="{{ route('submit.event.form') }}" class="block hover:text-yellow-500 font-medium">📅 Submit Your Event!</a>
         </nav>
     </div>
 
@@ -39,8 +39,11 @@
         <div class="max-w-xl w-full bg-white p-8 rounded-2xl shadow-lg">
             <h2 class="text-2xl font-extrabold text-gray-800 mb-6 text-center">Submit Your Event</h2>
 
-   <form id="submitEventForm" action="{{ route('submit.event') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+   <form action="{{ route('submit.event') }}" method="POST" enctype="multipart/form-data">
     @csrf
+    <!-- your input fields here -->
+</form>
+
 
                 {{-- Name --}}
                 <div>

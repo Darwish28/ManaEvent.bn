@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('file_path')->nullable();
             $table->string('status')->default('pending'); // pending, approved, rejected
             $table->timestamps();
+            $table->string('image_path')->nullable(); // or use text() if storing JSON
         });
     }
 

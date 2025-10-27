@@ -24,6 +24,8 @@ export interface Event {
   end_time?: string
   created_at?: string
   updated_at?: string
+  image_path?: string | string[] | null
+
 }
 
 interface EventTableProps {
