@@ -16,7 +16,6 @@ class SubmitYourEventController extends Controller
     // Handle event submission (from form)
     public function store(Request $request)
     {
-        // ✅ Validate incoming data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email',
@@ -25,6 +24,7 @@ class SubmitYourEventController extends Controller
             'description' => 'nullable|string',
             'location' => 'nullable|string',
             'start_time' => 'nullable|date',
+            'end_time' => 'nullable|date',
             'images.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
@@ -36,7 +36,7 @@ class SubmitYourEventController extends Controller
             }
         }
 
-        // ✅ Create new event record
+        // ✅ Save to database
         EventSubmission::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -45,11 +45,11 @@ class SubmitYourEventController extends Controller
             'description' => $validated['description'] ?? null,
             'location' => $validated['location'] ?? null,
             'start_time' => $validated['start_time'] ?? null,
+            'end_time' => $validated['end_time'] ?? null,
             'image_path' => json_encode($paths),
-            'status' => 'pending', // mark as pending by default
+            'status' => 'pending',
         ]);
 
-        // ✅ Redirect back with success message
         return redirect()
             ->route('submit.event.form')
             ->with('success', 'Event submitted successfully! Pending admin approval.');

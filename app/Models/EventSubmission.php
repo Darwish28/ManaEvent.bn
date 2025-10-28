@@ -2,21 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class EventSubmission extends Model
 {
-    protected $fillable = [
-    'name',
-    'email',
-    'phone',
-    'event_name',
-    'start_time',
-    'end_time',
-    'location',
-    'description',
-    'file_path',
-    'status'
-];
+    use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'event_name',
+        'description',
+        'location',
+        'start_time',
+        'end_time',
+        'image_path',
+        'status',
+    ];
 }
+

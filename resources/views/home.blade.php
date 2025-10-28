@@ -243,7 +243,7 @@
 
   <!-- Submit Button -->
   <div style="text-align:center;">
-    <a href="{{ route('submit-event') }}" class="btn-submit">+ Submit Your Event</a>
+    <a href="{{ route('submit.event') }}" class="btn-submit">+ Submit Your Event</a>
   </div>
 
   <!-- What's New -->
