@@ -10,16 +10,17 @@ class EventSubmission extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'event_name',
-        'description',
-        'location',
-        'start_time',
-        'end_time',
-        'image_path',
-        'status',
-    ];
+    'name',
+    'email',
+    'phone',
+    'event_name',
+    'description',
+    'location',
+    'start_time',
+    'end_time',
+    'file_path',
+    'status',
+];
+
 }
 

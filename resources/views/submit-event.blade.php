@@ -52,10 +52,29 @@
                 const alert = document.getElementById('success-alert');
                 setTimeout(() => {
                     alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 600); // remove after fade
-                }, 6000); // 6s delay before fading
+                    setTimeout(() => alert.remove(), 600);
+                }, 6000);
             });
         </script>
+        @endif
+
+        {{-- ❗ Validation Errors --}}
+        @if ($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <strong class="font-bold">❗ Submission failed:</strong>
+            <ul class="mt-2 list-disc list-inside text-sm">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        {{-- ❗ Generic Error (from controller) --}}
+        @if (session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <strong class="font-bold">❗ Error:</strong> {{ session('error') }}
+        </div>
         @endif
 
         <form action="{{ route('submit.event') }}" method="POST" enctype="multipart/form-data">
