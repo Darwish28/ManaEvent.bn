@@ -230,11 +230,11 @@
     <div class="hero-slide active">
       <img src="/images/NationalDay.png" alt="National Day">
     </div>
-    <div class="hero-slide">
-      <img src="/images/FoodFestivalBanner.png" alt="Food Festival Banner">
-    </div>
-    <div class="hero-slide">
-      <img src="/images/FireworksBanner.png" alt="Fireworks Show Banner">
+  
+
+     <div class="hero-slide">
+    <img src="https://utktxqglouvgtidlfvmr.supabase.co/storage/v1/object/public/event_images/1759826308778-09b9dd1d-775f-4c91-8745-b56db8896b6e.jpeg" 
+         alt="New Event Image">
     </div>
 
     <button class="prev">&#10094;</button>
