@@ -72,15 +72,14 @@ Route::get('/admin/dashboard/stats', [DashboardController::class, 'stats']);
 
 //Submit Your Event routes
 use App\Http\Controllers\SubmitYourEventController;
-
-// Show the form
+// ✅ Route to show the submit event form
 Route::get('/submit-event', [SubmitYourEventController::class, 'create'])
-    ->name('submit.event.form');
+    ->name('submit-event'); // ✅ FIXED (hyphen version to match Blade)
 
-// Handle form submission
+// ✅ Route to handle form submission
 Route::post('/submit-event', [SubmitYourEventController::class, 'store'])
-    ->name('submit.event');
-
+    ->name('submit-event.store');
+    
  //Register routes
 use App\Http\Controllers\AuthController;
 
@@ -91,16 +90,32 @@ Route::get('/register', \App\Livewire\Auth\Register::class)->name('register');
 Route::post('/register', [AuthController::class, 'register'])
     ->name('register.perform');
 
+// Registrations 
+use App\Http\Controllers\RegisterController;
 
+// Registration form
+Route::get('/register', [RegisterController::class, 'showForm'])->name('register.form');
 
-// Admin routes
-Route::get('/admin/{any?}', function () {
-    return view('app');
-})->where('any', '.*');
+// Handle registration submission
+Route::post('/register', [RegisterController::class, 'register'])->name('register');
 
+// Login routes 
+use App\Http\Controllers\LoginController;
 
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// settings routes 
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/settings/profile', Profile::class)->name('settings.profile');
+});
 
+// Admin Registered users 
+use App\Http\Controllers\AdminUserController;
+Route::get('/api/users', [AdminUserController::class, 'index']);
 
-
+// 🔴 THIS MUST STAY AT THE VERY BOTTOM
+// Admin routes (wildcard)
+Route::view('/admin/{any?}', 'layouts.admin')->where('any', '.*');

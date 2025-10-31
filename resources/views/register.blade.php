@@ -199,6 +199,14 @@
       : `<path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/><circle cx="12" cy="12" r="3"/>`;
   });
 
+  // sucess login message
+  @if (session('success'))
+  <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700 text-center">
+    {{ session('success') }}
+  </div>
+@endif
+
+
   // eye toggle for confirm password
   const confirmBtn = document.getElementById('toggleConfirmPass');
   const confirmInput = document.getElementById('password_confirmation');

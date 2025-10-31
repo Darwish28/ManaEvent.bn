@@ -31,7 +31,7 @@
             <a href="{{ route('about') }}" class="block hover:text-yellow-500 font-medium">ℹ️ About Us</a>
             <a href="{{ route('faq') }}" class="block hover:text-yellow-500 font-medium">❓ FAQ</a>
             <a href="{{ route('contact') }}" class="block hover:text-yellow-500 font-medium">📞 Contact Us</a>
-            <a href="{{ route('submit.event.form') }}" class="block hover:text-yellow-500 font-medium">📅 Submit Your Event!</a>
+            <a href="{{ route('submit.event') }}" class="block hover:text-yellow-500 font-medium">📅 Submit Your Event!</a>
         </nav>
     </div>
 
@@ -83,13 +83,13 @@
         </div>
         @endif
 
-        <form action="{{ route('submit.event') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('submit.event') }}" method="POST" enctype="multipart/form-data" id="eventForm">
             @csrf
 
-            {{-- Name --}}
+            {{-- Username --}}
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input type="text" name="name" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-yellow-400 focus:outline-none" required>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                <input type="text" name="username" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-yellow-400 focus:outline-none" required>
             </div>
 
             {{-- Email --}}
@@ -114,11 +114,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Start of Event</label>
-                    <input type="datetime-local" name="start_time" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-yellow-400 focus:outline-none" required>
+                    <input type="datetime-local" name="start_time" id="start_time" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-yellow-400 focus:outline-none date-input" required>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">End of Event</label>
-                    <input type="datetime-local" name="end_time" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-yellow-400 focus:outline-none" required>
+                    <input type="datetime-local" name="end_time" id="end_time" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-yellow-400 focus:outline-none date-input" required>
                 </div>
             </div>
 
@@ -140,9 +140,18 @@
                 <input type="file" name="images[]" multiple accept="image/*,.pdf,.doc,.docx" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
             </div>
 
+            {{-- CAPTCHA --}}
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Security Verification</label>
+                <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                @error('g-recaptcha-response')
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                @enderror
+            </div>
+
             {{-- Submit Button --}}
             <div class="text-center pt-4">
-                <button type="submit" class="w-full bg-yellow-400 text-white font-semibold py-3 rounded-lg hover:bg-yellow-500 transition">
+                <button type="submit" id="submitBtn" class="w-full bg-yellow-400 text-white font-semibold py-3 rounded-lg hover:bg-yellow-500 transition">
                     Submit Event
                 </button>
             </div>
@@ -157,6 +166,7 @@
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Menu functionality
         const menuBtn = document.getElementById('menu-btn');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
@@ -176,6 +186,119 @@
             sidebar.classList.add('-translate-x-full');
             overlay.classList.add('hidden');
         });
+
+        // Date validation and past date blurring
+        function validateDates() {
+            const startTimeInput = document.getElementById('start_time');
+            const endTimeInput = document.getElementById('end_time');
+            const now = new Date();
+            
+            // Set minimum datetime to current time
+            const minDateTime = now.toISOString().slice(0, 16);
+            startTimeInput.min = minDateTime;
+            endTimeInput.min = minDateTime;
+
+            // Check for past dates and apply blur effect
+            const dateInputs = document.querySelectorAll('.date-input');
+            dateInputs.forEach(input => {
+                const inputDate = new Date(input.value);
+                if (input.value && inputDate < now) {
+                    input.classList.add('opacity-50', 'blur-sm');
+                    input.title = 'Past dates are not allowed';
+                } else {
+                    input.classList.remove('opacity-50', 'blur-sm');
+                    input.title = '';
+                }
+            });
+
+            // Validate end date is after start date
+            if (startTimeInput.value && endTimeInput.value) {
+                const startDate = new Date(startTimeInput.value);
+                const endDate = new Date(endTimeInput.value);
+                
+                if (endDate <= startDate) {
+                    endTimeInput.setCustomValidity('End time must be after start time');
+                    endTimeInput.classList.add('border-red-500');
+                } else {
+                    endTimeInput.setCustomValidity('');
+                    endTimeInput.classList.remove('border-red-500');
+                }
+            }
+        }
+
+        // Initialize date validation
+        validateDates();
+
+        // Add event listeners for date changes
+        document.getElementById('start_time').addEventListener('change', validateDates);
+        document.getElementById('end_time').addEventListener('change', validateDates);
+        document.getElementById('start_time').addEventListener('input', validateDates);
+        document.getElementById('end_time').addEventListener('input', validateDates);
+
+        // Form submission with CAPTCHA validation
+        const form = document.getElementById('eventForm');
+        form.addEventListener('submit', function(e) {
+            const startTimeInput = document.getElementById('start_time');
+            const endTimeInput = document.getElementById('end_time');
+            const now = new Date();
+            
+            // Validate dates on submission
+            if (startTimeInput.value) {
+                const startDate = new Date(startTimeInput.value);
+                if (startDate < now) {
+                    e.preventDefault();
+                    alert('Please select a future date for the event start time.');
+                    startTimeInput.focus();
+                    return;
+                }
+            }
+            
+            if (endTimeInput.value) {
+                const endDate = new Date(endTimeInput.value);
+                if (endDate < now) {
+                    e.preventDefault();
+                    alert('Please select a future date for the event end time.');
+                    endTimeInput.focus();
+                    return;
+                }
+            }
+
+            // Validate CAPTCHA
+            const captchaResponse = grecaptcha.getResponse();
+            if (captchaResponse.length === 0) {
+                e.preventDefault();
+                alert('Please complete the CAPTCHA verification.');
+                return;
+            }
+        });
+
+        // Auto-clear past dates on page load and focus
+        document.querySelectorAll('.date-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                const inputDate = new Date(this.value);
+                const now = new Date();
+                if (this.value && inputDate < now) {
+                    this.value = '';
+                    this.classList.remove('opacity-50', 'blur-sm');
+                }
+            });
+        });
     });
 </script>
+
+<style>
+    .date-input:invalid {
+        border-color: #ef4444;
+    }
+    
+    .date-input.blur-sm {
+        filter: blur(1px);
+        transition: all 0.3s ease;
+    }
+    
+    .date-input:disabled {
+        background-color: #f9fafb;
+        cursor: not-allowed;
+    }
+</style>
 @endsection
