@@ -81,6 +81,15 @@ Route::get('/submit-event', [SubmitYourEventController::class, 'create'])
 Route::post('/submit-event', [SubmitYourEventController::class, 'store'])
     ->name('submit.event');
 
+ //Register routes
+use App\Http\Controllers\AuthController;
+
+// GET is your Livewire page (already exists)
+Route::get('/register', \App\Livewire\Auth\Register::class)->name('register');
+
+// ADD this POST route to match your form action
+Route::post('/register', [AuthController::class, 'register'])
+    ->name('register.perform');
 
 
 
