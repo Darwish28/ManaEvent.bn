@@ -26,12 +26,14 @@
         </div>
 
         <nav class="p-5 space-y-4 text-gray-800">
-            <a href="{{ route('home') }}" class="block hover:text-yellow-500 font-medium">🏠 Home</a>
-            <a href="{{ route('settings') }}" class="block hover:text-yellow-500 font-medium">⚙️ Settings</a>
-            <a href="{{ route('about') }}" class="block hover:text-yellow-500 font-medium">ℹ️ About Us</a>
-            <a href="{{ route('faq') }}" class="block hover:text-yellow-500 font-medium">❓ FAQ</a>
-            <a href="{{ route('contact') }}" class="block hover:text-yellow-500 font-medium">📞 Contact Us</a>
-            <a href="{{ route('submit.event') }}" class="block hover:text-yellow-500 font-medium">📅 Submit Your Event!</a>
+           {{-- Sidebar links --}}
+<a href="{{ route('home') }}" class="block hover:text-yellow-500 font-medium">🏠 Home</a>
+<a href="{{ route('settings.profile') }}" class="block hover:text-yellow-500 font-medium">⚙️ Settings</a>
+<a href="{{ route('about') }}" class="block hover:text-yellow-500 font-medium">ℹ️ About Us</a>
+<a href="{{ route('faq') }}" class="block hover:text-yellow-500 font-medium">❓ FAQ</a>
+<a href="{{ route('contact') }}" class="block hover:text-yellow-500 font-medium">📞 Contact Us</a>
+<a href="{{ route('submit-event') }}" class="block hover:text-yellow-500 font-medium">📅 Submit Your Event!</a>
+
         </nav>
     </div>
 
@@ -83,8 +85,9 @@
         </div>
         @endif
 
-        <form action="{{ route('submit.event') }}" method="POST" enctype="multipart/form-data" id="eventForm">
-            @csrf
+        {{-- Form: post to the POST route name --}}
+<form action="{{ route('submit-event.store') }}" method="POST" enctype="multipart/form-data" id="eventForm">
+
 
             {{-- Username --}}
             <div>
