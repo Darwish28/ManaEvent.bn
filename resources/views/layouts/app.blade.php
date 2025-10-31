@@ -6,6 +6,8 @@
     <title>ManaEvent.bn</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    <!-- Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body class="antialiased bg-gray-100">
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\EventSubmission;
+use Illuminate\Support\Facades\Http;
 
 class SubmitYourEventController extends Controller
 {
@@ -19,17 +20,31 @@ class SubmitYourEventController extends Controller
     try {
         // NOTE: raise per-file limit to 8 MB to avoid silent fails on bigger images
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
+            'username'    => 'required|string|max:255',
             'email'       => 'required|email',
             'phone'       => 'nullable|string|max:20',
             'event_name'  => 'required|string|max:255',
             'description' => 'nullable|string',
             'location'    => 'nullable|string',
-            'start_time'  => 'nullable|date',
-            'end_time'    => 'nullable|date',
+            'start_time'  => 'nullable|date|after:now',
+            'end_time'    => 'nullable|date|after:start_time',
+            'g-recaptcha-response' => 'required',
             'images'      => 'nullable', // presence of array is ok
             'images.*'    => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:8192', // 8MB per file
         ]);
+
+        // Verify CAPTCHA
+        $captchaResponse = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $captchaResponse,
+        ]);
+
+        $result = $response->json();
+        if (empty($result['success']) || $result['success'] !== true) {
+            return back()->with('error', 'CAPTCHA verification failed. Please try again.')->withInput();
+        }
 
         // Multiple file upload (optional)
         $paths = [];
@@ -44,7 +59,7 @@ class SubmitYourEventController extends Controller
 
         // Save data
         EventSubmission::create([
-            'name'        => $validated['name'],
+            'name'        => $validated['username'],
             'email'       => $validated['email'],
             'phone'       => $validated['phone'] ?? null,
             'event_name'  => $validated['event_name'],
