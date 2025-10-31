@@ -57,7 +57,7 @@ class SubmitYourEventController extends Controller
         ]);
 
         return redirect()
-            ->route('submit.event.form')
+            ->route('submit-event')
             ->with('success', 'Event submitted successfully! Pending admin approval.');
 
     } catch (\Illuminate\Validation\ValidationException $e) {

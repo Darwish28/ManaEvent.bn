@@ -25,7 +25,7 @@
             <a href="{{ route('about') }}" class="block hover:text-yellow-500 font-medium">ℹ️ About Us</a>
             <a href="{{ route('faq') }}" class="block hover:text-yellow-500 font-medium">❓ FAQ</a>
             <a href="{{ route('contact') }}" class="block hover:text-yellow-500 font-medium">📞 Contact Us</a>
-            <a href="{{ route('submit.event.form') }}" class="block hover:text-yellow-500 font-medium">📅 Submit Your Event!</a>
+            <a href="{{ route('submit.event') }}" class="block hover:text-yellow-500 font-medium">📅 Submit Your Event!</a>
         </nav>
     </div>
 
