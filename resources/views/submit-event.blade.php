@@ -87,6 +87,8 @@
 
         {{-- Form: post to the POST route name --}}
 <form action="{{ route('submit-event.store') }}" method="POST" enctype="multipart/form-data" id="eventForm">
+    @csrf 
+
 
 
             {{-- Username --}}
@@ -143,14 +145,14 @@
                 <input type="file" name="images[]" multiple accept="image/*,.pdf,.doc,.docx" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
             </div>
 
-            {{-- CAPTCHA --}}
-            <div class="mt-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Security Verification</label>
-                <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
-                @error('g-recaptcha-response')
-                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
-                @enderror
-            </div>
+            {{-- reCAPTCHA TS --}}
+        <div class="mt-4">
+    <label class="block text-sm font-medium text-gray-700 mb-2">Security Verification</label>
+    <div class="g-recaptcha" data-sitekey="{{ config('services.nocaptcha.sitekey') }}"></div>
+    @error('g-recaptcha-response')
+        <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+    @enderror
+</div>
 
             {{-- Submit Button --}}
             <div class="text-center pt-4">
@@ -288,6 +290,8 @@
         });
     });
 </script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
 
 <style>
     .date-input:invalid {
@@ -304,4 +308,5 @@
         cursor: not-allowed;
     }
 </style>
+
 @endsection

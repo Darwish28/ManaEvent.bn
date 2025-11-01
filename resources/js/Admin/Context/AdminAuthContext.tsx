@@ -1,73 +1,124 @@
 import React, { useEffect, useState, createContext, useContext } from 'react'
+import axios from 'axios'
+
+interface AdminUser {
+  id: number
+  admin_id: string
+  name: string
+  email?: string
+}
+
 interface AdminAuthContextType {
   isAuthenticated: boolean
+  adminUser: AdminUser | null
+  setIsAuthenticated: (value: boolean) => void
   login: (adminId: string, password: string) => Promise<boolean>
-  logout: () => void
-  adminUser: {
-    id: string
-    name: string
-  } | null
+  logout: () => Promise<void>
 }
+
 const AdminAuthContext = createContext<AdminAuthContextType>({
   isAuthenticated: false,
-  login: async () => false,
-  logout: () => {},
   adminUser: null,
+  setIsAuthenticated: () => {},
+  login: async () => false,
+  logout: async () => {},
 })
+
 export const useAdminAuth = () => useContext(AdminAuthContext)
-export const AdminAuthProvider = ({
-  children,
-}: {
-  children: React.ReactNode
-}) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [adminUser, setAdminUser] = useState<{
-    id: string
-    name: string
-  } | null>(null)
-  // Check if user is already logged in on initial load
-  useEffect(() => {
-    const storedAuth = localStorage.getItem('adminAuth')
-    if (storedAuth) {
-      const authData = JSON.parse(storedAuth)
-      setIsAuthenticated(true)
-      setAdminUser(authData.user)
-    }
-  }, [])
-  // Mock login function (in a real app, this would call an API)
-  const login = async (adminId: string, password: string): Promise<boolean> => {
-    // Mock validation - in a real app this would be a server call
-    if (adminId === 'admin' && password === 'password123') {
-      const userData = {
-        id: adminId,
-        name: 'Admin User',
+
+export const AdminAuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // ✅ Load from localStorage if available
+    const stored = localStorage.getItem('adminAuth')
+    if (stored) {
+      try {
+        const data = JSON.parse(stored)
+        return !!data.authenticated
+      } catch {
+        return false
       }
-      setIsAuthenticated(true)
-      setAdminUser(userData)
-      // Store auth in localStorage for persistence
-      localStorage.setItem(
-        'adminAuth',
-        JSON.stringify({
-          authenticated: true,
-          user: userData,
-        }),
-      )
-      return true
     }
     return false
+  })
+
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(() => {
+    const stored = localStorage.getItem('adminAuth')
+    if (stored) {
+      try {
+        const data = JSON.parse(stored)
+        return data.user || null
+      } catch {
+        return null
+      }
+    }
+    return null
+  })
+
+  // ✅ Always include cookies and CSRF headers for Laravel
+  axios.defaults.withCredentials = true
+  axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+  axios.defaults.baseURL = 'http://manaevent.bn.test'
+
+  // ✅ Sync auth state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem(
+      'adminAuth',
+      JSON.stringify({ authenticated: isAuthenticated, user: adminUser })
+    )
+  }, [isAuthenticated, adminUser])
+
+  // ✅ Login function
+  const login = async (adminId: string, password: string): Promise<boolean> => {
+    try {
+      await axios.get('/sanctum/csrf-cookie')
+
+      const res = await axios.post(
+        '/admin/login',
+        { admin_id: adminId, password },
+        { withCredentials: true }
+      )
+
+      if (res.status === 200 && res.data?.success) {
+        // Optional: verify via /api/admin/me
+        const me = await axios.get('/api/admin/me', { withCredentials: true })
+
+        if (me.data?.authenticated) {
+          setIsAuthenticated(true)
+          setAdminUser(me.data.user)
+          localStorage.setItem(
+            'adminAuth',
+            JSON.stringify({ authenticated: true, user: me.data.user })
+          )
+          return true
+        }
+      }
+      return false
+    } catch (error) {
+      console.error('❌ Login failed:', error)
+      return false
+    }
   }
-  const logout = () => {
+
+  // ✅ Logout function
+  const logout = async (): Promise<void> => {
+    try {
+      await axios.post('/admin/logout', {}, { withCredentials: true })
+    } catch (error) {
+      console.warn('Logout error (ignored):', error)
+    }
     setIsAuthenticated(false)
     setAdminUser(null)
     localStorage.removeItem('adminAuth')
   }
+
   return (
     <AdminAuthContext.Provider
       value={{
         isAuthenticated,
+        adminUser,
+        setIsAuthenticated,
         login,
         logout,
-        adminUser,
       }}
     >
       {children}

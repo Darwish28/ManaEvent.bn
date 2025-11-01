@@ -11,6 +11,10 @@
 </head>
 <body class="antialiased bg-gray-100">
 
+ {{-- ✅ Important for CSRF protection --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
     {{-- Navbar --}}
     @include('layouts.navbar')
 
