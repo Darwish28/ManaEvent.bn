@@ -1,126 +1,196 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ManaEvent.bn • Settings </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+    :root{
+      --brand:#f5c518;
+      --brand-light:#fff3a1;
+      --ink:#0f172a;
+      --paper:#fffbea;
+      --panel:#fffef6;
+      --soft:#fff9c4;
+      --border:#e5d84a;
+    }
+    body{ font-family:'Poppins',sans-serif; background:var(--paper); color:var(--ink); }
+    .card{ background:var(--panel); border:1px solid var(--border); box-shadow:0 3px 10px rgba(0,0,0,.05); }
+    .nav-btn{ display:flex; align-items:center; gap:.6rem; width:100%; text-align:left; padding:.8rem 1rem; border-radius:.8rem; transition:.25s; }
+    .nav-btn:hover{ background:var(--brand-light); }
+    .nav-btn.active{ background:var(--brand); color:#000; font-weight:600; }
+    .input{ width:100%; border:1px solid #e0c400; border-radius:.75rem; padding:.7rem .95rem; background:white; }
+    .input:focus{ outline:none; box-shadow:0 0 0 3px rgba(245,197,24,.4); border-color:var(--brand); }
+    .btn{ display:inline-flex; align-items:center; gap:.5rem; padding:.65rem 1rem; border-radius:.8rem; font-weight:600; transition:.25s; }
+    .btn-ghost{ border:1px solid var(--border); background:#fff }
+    .btn-ghost:hover{ background:var(--brand-light) }
+    .btn-brand{ background:var(--brand); color:#111827 }
+    .btn-brand:hover{ background:#f2cc05; }
+    .btn-danger{ background:#ef4444; color:#fff }
+    .btn-danger:hover{ filter:brightness(.95) }
+    .toggle{--h:30px;--w:54px; position:relative; width:var(--w); height:var(--h)}
+    .toggle input{position:absolute; inset:0; opacity:0}
+    .toggle .track{position:absolute; inset:0; background:#e5e7eb; border-radius:999px; transition:.2s}
+    .toggle .knob{position:absolute; top:3px; left:3px; width:24px; height:24px; background:#fff; border-radius:999px; box-shadow:0 1px 2px rgba(0,0,0,.25); transition:.2s}
+    .toggle input:checked + .track{ background:var(--brand) }
+    .toggle input:checked + .track + .knob{ transform:translateX(24px) }
+  </style>
+</head>
+<body>
+  <header class="sticky top-0 z-30 w-full bg-[var(--brand)] shadow-md">
+  <div class="max-w-7xl mx-auto h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-end">
+    <form method="POST" action="{{ route('logout') }}">
+      @csrf
+      <button class="btn btn-ghost" type="submit">
+        <i data-feather="log-out" class="w-4 h-4"></i> Log out
+      </button>
+    </form>
+  </div>
+</header>
 
-@section('content')
-<header class="bg-yellow-400 p-4 flex items-center justify-between relative">
-    <div class="flex items-center space-x-3">
-        {{-- Menu Button --}}
-        <button id="menu-btn" class="text-white text-3xl focus:outline-none">
-            &#9776;
-        </button>
-
-        <img src="/images/manaevent-logo.svg" alt="ManaEvent Logo" class="w-16">
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="mt-3 bg-[var(--soft)] p-4 rounded-xl">
+      <h1 class="text-xl font-semibold text-[var(--ink)]">Settings</h1>
+      <p class="text-sm text-slate-700">Manage profile, password & notifications</p>
     </div>
+  </section>
 
-    {{-- Sidebar Menu --}}
-    <div id="sidebar"
-         class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 z-50">
-        <div class="p-5 border-b flex justify-between items-center">
-            <h2 class="text-xl font-bold text-yellow-500">Menu</h2>
-            <button id="close-btn" class="text-gray-600 text-2xl">&times;</button>
-        </div>
-
-        <nav class="p-5 space-y-4 text-gray-800">
-            <a href="{{ route('home') }}" class="block hover:text-yellow-500 font-medium">🏠 Home</a>
-            <a href="{{ route('settings') }}" class="block hover:text-yellow-500 font-medium">⚙️ Settings</a>
-            <a href="{{ route('about') }}" class="block hover:text-yellow-500 font-medium">ℹ️ About Us</a>
-            <a href="{{ route('faq') }}" class="block hover:text-yellow-500 font-medium">❓ FAQ</a>
-            <a href="{{ route('contact') }}" class="block hover:text-yellow-500 font-medium">📞 Contact Us</a>
-            <a href="{{ route('submit-event') }}" class="block hover:text-yellow-500 font-medium">📅 Submit Your Event!</a>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-6">
+      <aside class="card rounded-2xl p-3 h-max sticky top-24">
+        <nav id="tabs" class="space-y-1">
+          <button class="nav-btn active" data-tab="profile"><i data-feather="user" class="w-4 h-4"></i><span>Profile</span></button>
+          <button class="nav-btn" data-tab="password"><i data-feather="lock" class="w-4 h-4"></i><span>Password</span></button>
+          <button class="nav-btn" data-tab="notifications"><i data-feather="bell" class="w-4 h-4"></i><span>Notifications</span></button>
         </nav>
-    </div>
+      </aside>
 
-    {{-- Background Overlay --}}
-    <div id="overlay"
-         class="fixed inset-0 bg-black bg-opacity-40 hidden z-40"></div>
-    </header>
-
-    {{-- Main Content --}}
-    <main class="flex-grow py-16 px-6">
-        <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8 space-y-10">
-
-            {{-- Notification Preferences --}}
-            <section>
-                <h2 class="text-2xl font-extrabold text-gray-800 mb-6">Notification Preferences</h2>
-
-                <form id="settingsForm" class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-700 font-medium">Email Notifications</span>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" checked>
-                            <div class="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-yellow-400 transition-all duration-200"></div>
-                            <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full peer-checked:translate-x-5 transition-transform"></div>
-                        </label>
-                    </div>
-
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-700 font-medium">SMS Notifications</span>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-yellow-400 transition-all duration-200"></div>
-                            <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full peer-checked:translate-x-5 transition-transform"></div>
-                        </label>
-                    </div>
-
-                    <div class="pt-6 text-center">
-                        <button type="submit"
-                            class="bg-yellow-400 text-white px-8 py-3 rounded-lg font-semibold hover:bg-yellow-500 transition">
-                            Save Settings
-                        </button>
-                    </div>
-                </form>
-            </section>
-
-            {{-- Confirmation Message --}}
-            <div id="settingsSuccess" class="hidden text-center mt-8">
-                <div class="text-5xl text-green-500 mb-3">✔</div>
-                <h3 class="text-lg font-semibold text-gray-800">Settings Saved</h3>
-                <p class="text-gray-500 text-sm">Your preferences have been updated successfully.</p>
+      <section class="space-y-6">
+        <!-- Profile -->
+        <div id="panel-profile" class="card rounded-2xl overflow-hidden">
+          <div class="px-6 py-5 border-b bg-[var(--brand-light)]"><h2 class="text-lg font-semibold">Profile</h2><p class="text-sm text-slate-700">Update your personal information</p></div>
+          <form class="px-6 py-6 grid gap-5 max-w-2xl">
+            <div class="flex items-center gap-5">
+              <div class="h-16 w-16 rounded-full bg-slate-200 grid place-items-center relative">
+                <i data-feather="user" class="w-7 h-7 text-slate-400"></i>
+              </div>
+              <div>
+                <label class="btn btn-ghost cursor-pointer">
+                  <input type="file" class="hidden" accept="image/*">
+                  <i data-feather="upload" class="w-4 h-4"></i> Edit Picture
+                </label>
+              </div>
             </div>
 
+            <div>
+              <label class="text-sm font-medium">Name</label>
+              <input class="input mt-1" placeholder="Alya Iffah" value="Alya Iffah">
+            </div>
+            <div>
+              <label class="text-sm font-medium">Username</label>
+              <input class="input mt-1" placeholder="lyvssoul" value="lyvssoul">
+            </div>
+            <div>
+              <label class="text-sm font-medium">Email</label>
+              <input class="input mt-1" type="email" placeholder="iffahfajriyahsaini@gmail.com" value="iffahfajriyahsaini@gmail.com">
+            </div>
+            <div class="flex gap-2 pt-1">
+              <button class="btn btn-brand" type="button"><i data-feather="save" class="w-4 h-4"></i> Save</button>
+              <button class="btn btn-ghost" type="button"><i data-feather="rotate-ccw" class="w-4 h-4"></i> Reset</button>
+            </div>
+          </form>
+          <div class="px-6 py-5 border-t bg-[var(--brand-light)]/50">
+            <h3 class="text-sm font-semibold text-red-600">Delete account</h3>
+            <p class="text-sm text-slate-700 mb-3">This will remove your data permanently.</p>
+            <button id="deleteOpen" class="btn btn-danger"><i data-feather="trash-2" class="w-4 h-4"></i> Delete account</button>
+          </div>
         </div>
-    </main>
 
-    {{-- Footer --}}
-    <footer class="bg-yellow-400 text-white text-center py-3 text-sm mt-auto">
-        ©2025 ManaEvent.bn | All Rights Reserved.
-    </footer>
-</div>
+        <!-- Password -->
+        <div id="panel-password" class="card rounded-2xl overflow-hidden hidden">
+          <div class="px-6 py-5 border-b bg-[var(--brand-light)]"><h2 class="text-lg font-semibold">Password</h2><p class="text-sm text-slate-700">Change your password</p></div>
+          <form class="px-6 py-6 grid gap-5 max-w-xl">
+            <div>
+              <label class="text-sm font-medium">Current password</label>
+              <input class="input mt-1" type="password" placeholder="••••••••">
+            </div>
+            <div>
+              <label class="text-sm font-medium">New password</label>
+              <input class="input mt-1" type="password" placeholder="New strong password">
+            </div>
+            <div>
+              <label class="text-sm font-medium">Retype new password</label>
+              <input class="input mt-1" type="password" placeholder="Repeat new password">
+            </div>
+            <button class="btn btn-brand w-max" type="button"><i data-feather="check-circle" class="w-4 h-4"></i> Update password</button>
+          </form>
+        </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('settingsForm');
-    const successMsg = document.getElementById('settingsSuccess');
+        <!-- Notifications -->
+        <div id="panel-notifications" class="card rounded-2xl overflow-hidden hidden">
+          <div class="px-6 py-5 border-b bg-[var(--brand-light)]"><h2 class="text-lg font-semibold">Notifications</h2><p class="text-sm text-slate-700">Choose how you want to be notified</p></div>
+          <div class="px-6 py-6 space-y-6 max-w-2xl">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-medium text-base">Upcoming Events</p>
+                <p class="text-sm text-slate-700">Get notified about upcoming events</p>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label>
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-medium text-base">New Events Posted</p>
+                <p class="text-sm text-slate-700">Receive alerts when new events are posted</p>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label>
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-medium text-base">Email Notifications</p>
+                <p class="text-sm text-slate-700">Receive notifications via email</p>
+              </div>
+              <label class="toggle"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label>
+            </div>
+            <button class="btn btn-brand mt-4"><i data-feather="save" class="w-4 h-4"></i> Save preferences</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        successMsg.classList.remove('hidden');
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    });
-});
-</script>
+    <!-- ... your entire settings HTML above ... -->
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const menuBtn = document.getElementById('menu-btn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const closeBtn = document.getElementById('close-btn');
+  <!-- JS for tab switching -->
+  <script>
+    feather.replace();
 
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.remove('-translate-x-full');
-            overlay.classList.remove('hidden');
-        });
+    const tabs = document.querySelectorAll('#tabs .nav-btn');
+    const panels = {
+      profile: document.getElementById('panel-profile'),
+      password: document.getElementById('panel-password'),
+      notifications: document.getElementById('panel-notifications'),
+    };
 
-        closeBtn.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
+    function show(tab){
+      tabs.forEach(t => t.classList.remove('active'));
+      Object.values(panels).forEach(p => p.classList.add('hidden'));
+      document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+      panels[tab]?.classList.remove('hidden');
+    }
 
-        overlay.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
-    });
-</script>
-@endsection
+    // Click -> change tab + update hash (but keep URL as /settings)
+    tabs.forEach(t => t.addEventListener('click', () => {
+      const tab = t.dataset.tab;
+      show(tab);
+      history.replaceState(null, '', '#'+tab); // silently updates the hash
+    }));
+
+    // On load, respect hash; default to profile
+    const initial = location.hash?.replace('#','') || 'profile';
+    show(initial);
+  </script>
+</body>
+</html>
