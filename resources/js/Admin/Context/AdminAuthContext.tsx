@@ -11,6 +11,7 @@ interface AdminUser {
 interface AdminAuthContextType {
   isAuthenticated: boolean
   adminUser: AdminUser | null
+  loading: boolean
   setIsAuthenticated: (value: boolean) => void
   login: (adminId: string, password: string) => Promise<boolean>
   logout: () => Promise<void>
@@ -19,6 +20,7 @@ interface AdminAuthContextType {
 const AdminAuthContext = createContext<AdminAuthContextType>({
   isAuthenticated: false,
   adminUser: null,
+  loading: true,
   setIsAuthenticated: () => {},
   login: async () => false,
   logout: async () => {},
@@ -27,47 +29,32 @@ const AdminAuthContext = createContext<AdminAuthContextType>({
 export const useAdminAuth = () => useContext(AdminAuthContext)
 
 export const AdminAuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    // ✅ Load from localStorage if available
-    const stored = localStorage.getItem('adminAuth')
-    if (stored) {
-      try {
-        const data = JSON.parse(stored)
-        return !!data.authenticated
-      } catch {
-        return false
-      }
-    }
-    return false
-  })
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const [adminUser, setAdminUser] = useState<AdminUser | null>(() => {
-    const stored = localStorage.getItem('adminAuth')
-    if (stored) {
-      try {
-        const data = JSON.parse(stored)
-        return data.user || null
-      } catch {
-        return null
-      }
-    }
-    return null
-  })
-
-  // ✅ Always include cookies and CSRF headers for Laravel
   axios.defaults.withCredentials = true
   axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
   axios.defaults.baseURL = 'http://manaevent.bn.test'
 
-  // ✅ Sync auth state to localStorage whenever it changes
+  // ✅ Verify Laravel session on app load
   useEffect(() => {
-    localStorage.setItem(
-      'adminAuth',
-      JSON.stringify({ authenticated: isAuthenticated, user: adminUser })
-    )
-  }, [isAuthenticated, adminUser])
+    axios
+      .get('/api/admin/me')
+      .then((res) => {
+        if (res.data?.authenticated) {
+          setIsAuthenticated(true)
+          setAdminUser(res.data.user)
+        }
+      })
+      .catch(() => {
+        setIsAuthenticated(false)
+        setAdminUser(null)
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
-  // ✅ Login function
+  // ✅ Login
   const login = async (adminId: string, password: string): Promise<boolean> => {
     try {
       await axios.get('/sanctum/csrf-cookie')
@@ -79,16 +66,10 @@ export const AdminAuthProvider = ({ children }: { children: React.ReactNode }) =
       )
 
       if (res.status === 200 && res.data?.success) {
-        // Optional: verify via /api/admin/me
         const me = await axios.get('/api/admin/me', { withCredentials: true })
-
         if (me.data?.authenticated) {
           setIsAuthenticated(true)
           setAdminUser(me.data.user)
-          localStorage.setItem(
-            'adminAuth',
-            JSON.stringify({ authenticated: true, user: me.data.user })
-          )
           return true
         }
       }
@@ -99,7 +80,7 @@ export const AdminAuthProvider = ({ children }: { children: React.ReactNode }) =
     }
   }
 
-  // ✅ Logout function
+  // ✅ Logout
   const logout = async (): Promise<void> => {
     try {
       await axios.post('/admin/logout', {}, { withCredentials: true })
@@ -108,7 +89,6 @@ export const AdminAuthProvider = ({ children }: { children: React.ReactNode }) =
     }
     setIsAuthenticated(false)
     setAdminUser(null)
-    localStorage.removeItem('adminAuth')
   }
 
   return (
@@ -116,6 +96,7 @@ export const AdminAuthProvider = ({ children }: { children: React.ReactNode }) =
       value={{
         isAuthenticated,
         adminUser,
+        loading,
         setIsAuthenticated,
         login,
         logout,

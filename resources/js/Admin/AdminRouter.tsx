@@ -18,13 +18,16 @@ import { AdminAuthProvider, useAdminAuth } from "./Context/AdminAuthContext";
 
 // ✅ Protected Route wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAdminAuth();
-  console.log("🧠 ProtectedRoute auth state:", isAuthenticated, window.location.pathname);
-
+  const { isAuthenticated, loading } = useAdminAuth();
+  
+  // Wait until auth check finishes
+  if (loading) {
+    return <div className="text-center mt-10 text-gray-500">Checking session...</div>;
+  }
 
   if (!isAuthenticated) {
     // Redirect unauthenticated users to /login
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;
@@ -60,5 +63,5 @@ export default function AdminRouter() {
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </AdminAuthProvider>
-  );
-}
+  )};
+

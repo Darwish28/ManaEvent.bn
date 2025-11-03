@@ -1,6 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./Admin/AdminRouter";
 import axios from 'axios';
+import { AdminAuthProvider } from "./Admin/Context/AdminAuthContext";
 
 function App() {
   return (
