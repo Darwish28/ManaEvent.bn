@@ -19,8 +19,8 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <BrowserRouter basename="/admin">
-      <AdminRouter />
-    </BrowserRouter>
+      <BrowserRouter basename="/admin">
+        <AdminRouter />
+      </BrowserRouter>
   </React.StrictMode>
 );

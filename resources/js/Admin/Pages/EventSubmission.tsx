@@ -57,30 +57,42 @@ const EventSubmissions = () => {
     }
   }, [location, filteredEvents])
 
-  // Apply filters dynamically
-  useEffect(() => {
-    let data = [...events]
+    // Apply filters dynamically
+useEffect(() => {
+  let data = [...events];
 
-    if (statusFilter !== 'all') {
-      data = data.filter((e) => e.status === statusFilter)
+  // ✅ Filter by status (pending / approved / etc.)
+  if (statusFilter !== 'all') {
+    data = data.filter((e) => e.status === statusFilter);
+  }
+
+  // ✅ Sort by event start_time (real calendar order)
+  data.sort((a, b) => {
+    const dateA = new Date(a.start_time || '').getTime();
+    const dateB = new Date(b.start_time || '').getTime();
+
+    // "desc" = Newest First (soonest upcoming)
+    // "asc"  = Oldest First (farthest away)
+    if (sortOrder === 'desc') {
+      return dateA - dateB; // earlier dates first (soonest event)
+    } else {
+      return dateB - dateA; // later dates first (farther in future)
     }
+  });
 
-    data.sort((a, b) => {
-      const dateA = new Date(a.created_at || '').getTime()
-      const dateB = new Date(b.created_at || '').getTime()
-      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA
-    })
+  // ✅ Sort alphabetically (A–Z / Z–A)
+  data.sort((a, b) => {
+    const nameA = a.event_name?.toLowerCase() || '';
+    const nameB = b.event_name?.toLowerCase() || '';
+    return alphabetical === 'az'
+      ? nameA.localeCompare(nameB)
+      : nameB.localeCompare(nameA);
+  });
 
-    data.sort((a, b) => {
-      const nameA = a.event_name?.toLowerCase() || ''
-      const nameB = b.event_name?.toLowerCase() || ''
-      return alphabetical === 'az'
-        ? nameA.localeCompare(nameB)
-        : nameB.localeCompare(nameA)
-    })
+  setFilteredEvents(data);
+}, [statusFilter, sortOrder, alphabetical, events]);
 
-    setFilteredEvents(data)
-  }, [statusFilter, sortOrder, alphabetical, events])
+    
 
   // CRUD
   const handleViewEvent = (event: AdminEvent) => {

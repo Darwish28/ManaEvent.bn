@@ -25,32 +25,32 @@ const AdminLayout = () => {
   const navItems = [
     {
       name: 'Dashboard',
-      path: '/admin',
+      path: '/Dashboard',
       icon: <LayoutDashboardIcon size={20} />,
     },
     {
       name: 'Event Submissions',
-      path: '/admin/submissions',
+      path: '/submissions',
       icon: <ClipboardListIcon size={20} />,
     },
     {
       name: 'Publish Event',
-      path: '/admin/publish',
+      path: '/publish',
       icon: <CalendarPlusIcon size={20} />,
     },
     {
       name: 'User Management',
-      path: '/admin/users',
+      path: '/users',
       icon: <UsersIcon size={20} />,
     },
     {
       name: 'Notification Settings',
-      path: '/admin/notifications',
+      path: '/notifications',
       icon: <BellIcon size={20} />,
     },
     {
       name: 'Admin Settings',
-      path: '/admin/settings',
+      path: '/settings',
       icon: <SettingsIcon size={20} />,
     },
   ]
