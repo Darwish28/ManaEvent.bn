@@ -123,3 +123,14 @@ Route::post('/logout', function () {
 
     return redirect()->route('login');
 })->name('logout');
+
+// ---------------------------------------------------------
+// Settings Routes
+// ---------------------------------------------------------
+use App\Livewire\Settings\Profile; // add this at the top of the file with other "use" lines
+
+Route::middleware(['auth'])
+    ->prefix('settings')
+    ->group(function () {
+        Route::get('/profile', Profile::class)->name('settings.profile');
+    });

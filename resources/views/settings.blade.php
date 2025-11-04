@@ -87,15 +87,15 @@
 
             <div>
               <label class="text-sm font-medium">Name</label>
-              <input class="input mt-1" placeholder="Alya Iffah" value="Alya Iffah">
+              <input class="input mt-1" placeholder="Name" value="">
             </div>
             <div>
               <label class="text-sm font-medium">Username</label>
-              <input class="input mt-1" placeholder="lyvssoul" value="lyvssoul">
+              <input class="input mt-1" placeholder="Username" value="">
             </div>
             <div>
               <label class="text-sm font-medium">Email</label>
-              <input class="input mt-1" type="email" placeholder="iffahfajriyahsaini@gmail.com" value="iffahfajriyahsaini@gmail.com">
+              <input class="input mt-1" type="email" placeholder="Email" value="">
             </div>
             <div class="flex gap-2 pt-1">
               <button class="btn btn-brand" type="button"><i data-feather="save" class="w-4 h-4"></i> Save</button>
