@@ -14,21 +14,18 @@
       --shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
 
-    /* ---------- Body (Background Image + Opacity Overlay) ---------- */
     body {
       font-family: 'Poppins', Arial, sans-serif;
       margin: 0;
       color: var(--text-dark);
       line-height: 1.6;
-
       background:
         linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
         url('images/blackyellowwhite.jpg') center top no-repeat;
-        background-size: cover; 
+      background-size: cover; 
       background-attachment: fixed;
     }
 
-    /* ---------- Header ---------- */
     .header {
       position: sticky;
       top: 0;
@@ -41,185 +38,81 @@
       box-shadow: var(--shadow);
     }
 
-    .header img {
-      max-width: 120px;
-      height: auto;
-    }
+    .header img { max-width: 120px; height: auto; }
 
     .menu-btn {
-      font-size: 1.8rem;
-      color: white;
-      background: none;
-      border: none;
-      cursor: pointer;
+      font-size: 1.8rem; color: white;
+      background: none; border: none; cursor: pointer;
     }
 
-    /* ---------- Hero Slider ---------- */
     .hero-slider {
-      position: relative;
-      max-width: 100%;
-      margin: 1.5rem auto;
-      overflow: hidden;
-      border-radius: 14px;
-      box-shadow: var(--shadow);
+      position: relative; max-width: 100%;
+      margin: 1.5rem auto; overflow: hidden;
+      border-radius: 14px; box-shadow: var(--shadow);
     }
 
-    .hero-slide {
-      display: none;
-      width: 100%;
-      transition: 0.5s;
-    }
+    .hero-slide { display: none; width: 100%; transition: 0.5s; }
+    .hero-slide img { width: 100%; display: block; border-radius: 14px; }
+    .hero-slide.active { display: block; }
 
-    .hero-slide img {
-      width: 100%;
-      display: block;
-      border-radius: 14px;
+    .hero-slider .prev, .hero-slider .next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,0.4); color: white;
+      border: none; padding: 0.5rem 1rem; cursor: pointer;
+      border-radius: 50%; font-size: 1.5rem;
     }
-
-    .hero-slide.active {
-      display: block;
-    }
-
-    .hero-slider .prev,
-    .hero-slider .next {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.4);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 50%;
-      font-size: 1.5rem;
-    }
-
     .hero-slider .prev { left: 10px; }
     .hero-slider .next { right: 10px; }
 
-    /* ---------- Submit Button ---------- */
     .btn-submit {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      font-weight: 600;
-      padding: 0.8rem 1.6rem;
-      border-radius: 25px;
-      text-decoration: none;
-      margin: 1.5rem auto;
-      transition: all 0.3s ease;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      display: inline-block; background: var(--primary); color: white;
+      font-weight: 600; padding: 0.8rem 1.6rem; border-radius: 25px;
+      text-decoration: none; margin: 1.5rem auto;
+      transition: all 0.3s ease; box-shadow: 0 3px 6px rgba(0,0,0,0.15);
     }
+    .btn-submit:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
-    .btn-submit:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-    }
-
-    /* ---------- Section Titles ---------- */
     .section-title {
-      background: var(--primary);
-      color: white;
-      font-weight: 600;
-      padding: 0.7rem;
-      margin: 2rem auto 1rem;
-      text-align: center;
-      border-radius: 10px;
-      width: fit-content;
-      min-width: 250px;
-      box-shadow: var(--shadow);
+      background: var(--primary); color: white; font-weight: 600;
+      padding: 0.7rem; margin: 2rem auto 1rem; text-align: center;
+      border-radius: 10px; width: fit-content; min-width: 250px; box-shadow: var(--shadow);
     }
 
-    /* ---------- Event Cards ---------- */
     .events {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      padding: 0 1rem 2rem;
-      flex-wrap: wrap;
+      display: flex; justify-content: center;
+      gap: 1.5rem; padding: 0 1rem 2rem; flex-wrap: wrap;
     }
 
     .event-card {
-      width: 280px;
-      background: var(--bg-light);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
+      width: 280px; background: var(--bg-light); border-radius: 10px;
+      overflow: hidden; box-shadow: var(--shadow);
       transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
+    .event-card:hover { transform: translateY(-6px); box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
 
-    .event-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    }
+    .event-card img { width: 100%; height: 160px; object-fit: cover; }
+    .event-card p { margin: 0.8rem 1rem 0.2rem; font-size: 1rem; font-weight: 600; }
 
-    .event-card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-    }
+    .event-info { font-size: 0.85rem; color: var(--text-light); margin: 0 1rem 0.5rem; }
+    .event-info span { display: inline-block; margin-right: 0.5rem; }
 
-    .event-card p {
-      margin: 0.8rem 1rem 0.2rem;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    .event-info {
-      font-size: 0.85rem;
-      color: var(--text-light);
-      margin: 0 1rem 0.5rem;
-    }
-
-    .event-info span {
-      display: inline-block;
-      margin-right: 0.5rem;
-    }
-
-    .view-more {
-      text-align: right;
-      margin: 0 1rem 1rem;
-    }
-
+    .view-more { text-align: right; margin: 0 1rem 1rem; }
     .view-more a {
-      font-size: 0.85rem;
-      text-decoration: none;
-      color: #2563eb;
-      transition: color 0.3s;
+      font-size: 0.85rem; text-decoration: none;
+      color: #2563eb; transition: color 0.3s;
     }
+    .view-more a:hover { color: #1d4ed8; }
 
-    .view-more a:hover {
-      color: #1d4ed8;
-    }
-
-    /* ---------- Footer ---------- */
     footer {
-      background: #f3f4f6;
-      text-align: center;
-      padding: 1.2rem;
-      font-size: 0.85rem;
-      color: var(--text-light);
-      margin-top: 2rem;
+      background: #f3f4f6; text-align: center; padding: 1.2rem;
+      font-size: 0.85rem; color: var(--text-light); margin-top: 2rem;
     }
 
-    /* ---------- Responsive ---------- */
     @media (max-width: 768px) {
-      .hero-slide img {
-        max-width: 95%;
-      }
-
-      .btn-submit {
-        width: 80%;
-      }
-
-      .events {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .event-card {
-        width: 90%;
-      }
+      .hero-slide img { max-width: 95%; }
+      .btn-submit { width: 80%; }
+      .events { flex-direction: column; align-items: center; }
+      .event-card { width: 90%; }
     }
   </style>
 </head>
@@ -237,11 +130,9 @@
     <div class="hero-slide active">
       <img src="images/NationalDay.png" alt="National Day">
     </div>
-
     <div class="hero-slide">
       <img src="https://utktxqglouvgtidlfvmr.supabase.co/storage/v1/object/public/event_images/1759826308778-09b9dd1d-775f-4c91-8745-b56db8896b6e.jpeg" alt="New Event Image">
     </div>
-
     <button class="prev">&#10094;</button>
     <button class="next">&#10095;</button>
   </div>
@@ -251,51 +142,87 @@
     <a href="{{ route('submit-event') }}" class="btn-submit">+ Submit Your Event</a>
   </div>
 
-  <!-- What's New -->
+  <!-- Static What's New -->
   <div class="section-title">WHAT’S NEW THIS WEEK 🎉</div>
   <div class="events">
     <div class="event-card">
       <img src="images/foodfestival.svg" alt="Food Festival">
       <p>Food Festival</p>
-      <div class="event-info">
-        <span>📅 28 Oct 2025</span> • <span>📍 Brunei City Center</span>
-      </div>
+      <div class="event-info"><span>📅 28 Oct 2025</span> • <span>📍 Brunei City Center</span></div>
       <div class="view-more"><a href="{{ route('events.food-festival') }}">View more →</a></div>
     </div>
-
     <div class="event-card">
       <img src="images/donation.svg" alt="Donation">
       <p>Donation Drive</p>
-      <div class="event-info">
-        <span>📅 30 Oct 2025</span> • <span>📍 Kampong Ayer</span>
-      </div>
+      <div class="event-info"><span>📅 30 Oct 2025</span> • <span>📍 Kampong Ayer</span></div>
       <div class="view-more"><a href="{{ route('events.donation') }}">View more →</a></div>
     </div>
   </div>
 
-  <!-- Upcoming Events -->
+  <!-- Dynamic What's New -->
+  <div class="events">
+    @forelse($whatsNew as $event)
+      <div class="event-card">
+        <img 
+          src="{{ $event->file_path ? asset('storage/' . $event->file_path) : asset('images/default-event.jpg') }}" 
+          alt="{{ $event->event_name }}">
+        <p>{{ $event->event_name }}</p>
+        <div class="event-info">
+          <span>📅 {{ \Carbon\Carbon::parse($event->start_time)->format('d M Y') }}</span> • 
+          <span>📍 {{ $event->location ?? 'TBA' }}</span>
+        </div>
+        <div class="view-more">
+          <a href="{{ route('events.show', $event->id) }}">View more →</a>
+        </div>
+      </div>
+    @empty
+      <p class="text-center text-gray-500 w-full">No new events this week.</p>
+    @endforelse
+  </div>
+
+  <!-- Static Upcoming -->
   <div class="section-title">UPCOMING EVENTS 🔥</div>
   <div class="events">
     <div class="event-card">
       <img src="images/theatre.svg" alt="Theatre Performance">
       <p>Theatre Performance</p>
-      <div class="event-info">
-        <span>📅 5 Nov 2025</span> • <span>📍 Royal Theatre</span>
-      </div>
+      <div class="event-info"><span>📅 5 Nov 2025</span> • <span>📍 Royal Theatre</span></div>
       <div class="view-more"><a href="{{ route('events.theatre-performance') }}">View more →</a></div>
     </div>
-
     <div class="event-card">
       <img src="images/fireworks.svg" alt="Fireworks Show">
       <p>Fireworks Show</p>
-      <div class="event-info">
-        <span>📅 10 Nov 2025</span> • <span>📍 Waterfront</span>
-      </div>
+      <div class="event-info"><span>📅 10 Nov 2025</span> • <span>📍 Waterfront</span></div>
       <div class="view-more"><a href="{{ route('events.firework-show') }}">View more →</a></div>
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Dynamic Approved Upcoming -->
+  @if(isset($upcoming) && $upcoming->count() > 0)
+    <div class="section-title">LATEST APPROVED EVENTS 🌟</div>
+    <div class="events">
+      @foreach($upcoming as $event)
+        <div class="event-card">
+          <img 
+            src="{{ $event->file_path ? asset('storage/' . $event->file_path) : asset('images/default-event.jpg') }}" 
+            alt="{{ $event->event_name }}" 
+            class="w-full h-48 object-cover rounded-t-lg"
+          />
+          <p>{{ $event->event_name }}</p>
+          <div class="event-info">
+            <span>📅 {{ \Carbon\Carbon::parse($event->start_time)->format('d M Y') }}</span> • 
+            <span>📍 {{ $event->location ?? 'TBA' }}</span>
+          </div>
+          <div class="view-more">
+            <a href="{{ route('events.show', $event->id) }}">View more →</a>
+          </div>
+        </div>
+      @endforeach
+    </div>
+  @else
+    <p class="text-center text-gray-500 w-full">No upcoming approved events yet.</p>
+  @endif
+
   <footer>
     © 2025 ManaEvent.bn — Bringing Brunei’s events together.
   </footer>

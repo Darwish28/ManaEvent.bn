@@ -11,7 +11,9 @@ const UserManagement = () => {
   // ✅ Fetch real users from Laravel backend
   useEffect(() => {
   axios
-    .get('http://manaevent.bn.test/api/users')
+    .get('http://manaevent.bn.test/api/admin/users', {
+  headers: { Accept: 'application/json' } 
+})
     .then((res) => {
       console.log('✅ Users fetched:', res.data)
       const formattedUsers = res.data.map((u: any) => ({

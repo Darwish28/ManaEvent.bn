@@ -124,10 +124,18 @@ const EventTable = ({
     currentEvents.map((event) => (
       // ✅ Added the id attribute for smooth scroll + highlight
       <tr
-        key={event.id}
-        id={`event-${event.id}`}
-        className="hover:bg-gray-50 transition-colors duration-200"
-      >
+          key={event.id}
+          id={`event-${event.id}`}
+          className={`hover:bg-gray-50 transition-all duration-300 ${
+          event.end_time
+      ? new Date(event.end_time).getTime() < Date.now()
+        ? 'opacity-50'
+        : 'opacity-100'
+      : event.start_time && new Date(event.start_time).getTime() < Date.now()
+        ? 'opacity-50'
+        : 'opacity-100'
+  }`}
+>
 
                   {/* Event */}
                   <td className="px-6 py-4 whitespace-nowrap">
