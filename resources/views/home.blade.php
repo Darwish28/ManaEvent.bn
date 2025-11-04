@@ -14,12 +14,18 @@
       --shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
 
+    /* ---------- Body (Background Image + Opacity Overlay) ---------- */
     body {
       font-family: 'Poppins', Arial, sans-serif;
       margin: 0;
-      background: var(--bg-light);
       color: var(--text-dark);
       line-height: 1.6;
+
+      background:
+        linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
+        url('images/blackyellowwhite.jpg') center top no-repeat;
+        background-size: cover; 
+      background-attachment: fixed;
     }
 
     /* ---------- Header ---------- */
@@ -74,7 +80,8 @@
       display: block;
     }
 
-    .hero-slider .prev, .hero-slider .next {
+    .hero-slider .prev,
+    .hero-slider .next {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
@@ -221,20 +228,18 @@
   <!-- Header -->
   <div class="header">
     <button class="menu-btn">&#9776;</button>
-    <img src="/images/manaevent-logo.svg" alt="ManaEvent Logo">
+    <img src="images/manaevent-logo.svg" alt="ManaEvent Logo">
     <div style="width:32px;"></div>
   </div>
 
   <!-- Hero Slider -->
   <div class="hero-slider">
     <div class="hero-slide active">
-      <img src="/images/NationalDay.png" alt="National Day">
+      <img src="images/NationalDay.png" alt="National Day">
     </div>
-  
 
-     <div class="hero-slide">
-    <img src="https://utktxqglouvgtidlfvmr.supabase.co/storage/v1/object/public/event_images/1759826308778-09b9dd1d-775f-4c91-8745-b56db8896b6e.jpeg" 
-         alt="New Event Image">
+    <div class="hero-slide">
+      <img src="https://utktxqglouvgtidlfvmr.supabase.co/storage/v1/object/public/event_images/1759826308778-09b9dd1d-775f-4c91-8745-b56db8896b6e.jpeg" alt="New Event Image">
     </div>
 
     <button class="prev">&#10094;</button>
@@ -250,7 +255,7 @@
   <div class="section-title">WHAT’S NEW THIS WEEK 🎉</div>
   <div class="events">
     <div class="event-card">
-      <img src="/images/foodfestival.svg" alt="Food Festival">
+      <img src="images/foodfestival.svg" alt="Food Festival">
       <p>Food Festival</p>
       <div class="event-info">
         <span>📅 28 Oct 2025</span> • <span>📍 Brunei City Center</span>
@@ -259,7 +264,7 @@
     </div>
 
     <div class="event-card">
-      <img src="/images/donation.svg" alt="Donation">
+      <img src="images/donation.svg" alt="Donation">
       <p>Donation Drive</p>
       <div class="event-info">
         <span>📅 30 Oct 2025</span> • <span>📍 Kampong Ayer</span>
@@ -272,7 +277,7 @@
   <div class="section-title">UPCOMING EVENTS 🔥</div>
   <div class="events">
     <div class="event-card">
-      <img src="/images/theatre.svg" alt="Theatre Performance">
+      <img src="images/theatre.svg" alt="Theatre Performance">
       <p>Theatre Performance</p>
       <div class="event-info">
         <span>📅 5 Nov 2025</span> • <span>📍 Royal Theatre</span>
@@ -281,7 +286,7 @@
     </div>
 
     <div class="event-card">
-      <img src="/images/fireworks.svg" alt="Fireworks Show">
+      <img src="images/fireworks.svg" alt="Fireworks Show">
       <p>Fireworks Show</p>
       <div class="event-info">
         <span>📅 10 Nov 2025</span> • <span>📍 Waterfront</span>
