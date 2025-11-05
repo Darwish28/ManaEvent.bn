@@ -80,14 +80,18 @@ useEffect(() => {
     }
   });
 
-  // ✅ Sort alphabetically (A–Z / Z–A)
-  data.sort((a, b) => {
-    const nameA = a.event_name?.toLowerCase() || '';
-    const nameB = b.event_name?.toLowerCase() || '';
-    return alphabetical === 'az'
-      ? nameA.localeCompare(nameB)
-      : nameB.localeCompare(nameA);
-  });
+  // ✅ Sort by event start_time (real calendar order)
+data.sort((a, b) => {
+  const dateA = new Date(a.start_time || '').getTime();
+  const dateB = new Date(b.start_time || '').getTime();
+
+  // Fix direction: "Newest First" = sooner upcoming, not far future
+  if (sortOrder === 'desc') {
+    return dateB - dateA; // Sooner (earlier) events first
+  } else {
+    return dateA - dateB; // Later (farther future) events last
+  }
+});
 
   setFilteredEvents(data);
 }, [statusFilter, sortOrder, alphabetical, events]);

@@ -6,7 +6,6 @@ import AdminDashboard from "./Pages/Dashboard";
 import EventSubmissions from "./Pages/EventSubmission";
 import PublishEvent from "./Pages/PublishEvent";
 import UserManagement from "./Pages/UserManagement";
-import NotificationSettings from "./Pages/NotificationSettings";
 import AdminSettings from "./Pages/AdminSettings";
 import AdminLayout from "./Components/AdminLayout";
 
@@ -47,7 +46,6 @@ export default function AdminRouter() {
           <Route path="submissions" element={<EventSubmissions />} />
           <Route path="publish" element={<PublishEvent />} />
           <Route path="users" element={<UserManagement />} />
-          <Route path="notifications" element={<NotificationSettings />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
 

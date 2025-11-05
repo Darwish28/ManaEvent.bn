@@ -13,6 +13,9 @@ use App\Http\Controllers\Admin\EventSubmissionController as AdminEventSubmission
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\EventController;
+
+Route::get('/', [EventController::class, 'index'])->name('home');
 
 // ✅ Admin status API for React (Check auth session)
 Route::get('/api/admin/me', function (Request $request) {
@@ -53,20 +56,22 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-// Splash & Home
+// Splash page (keep this as-is)
 Route::get('/', fn () => view('splash'))->name('splash');
-Route::get('/home', fn () => view('home'))->name('home');
 
+// Homepage now handled by EventController
+Route::get('/home', [EventController::class, 'index'])->name('home');
 // Static pages
 Route::view('/about', 'about')->name('about');
 Route::view('/faq', 'faq')->name('faq');
 Route::view('/contact', 'contact')->name('contact');
 
 // Event landing pages
-Route::view('/events/theatre-performance', 'events.theatre-performance')->name('events.theatre-performance');
-Route::view('/events/food-festival', 'events.food-festival')->name('events.food-festival');
-Route::view('/events/donation', 'events.donation')->name('events.donation');
-Route::view('/events/firework-show', 'events.firework-show')->name('events.firework-show');
+Route::get('/events/food-festival', fn() => view('events.food-festival'))->name('events.food-festival');
+Route::get('/events/donation', fn() => view('events.donation'))->name('events.donation');
+Route::get('/events/theatre-performance', fn() => view('events.theatre-performance'))->name('events.theatre-performance');
+Route::get('/events/firework-show', fn() => view('events.firework-show'))->name('events.firework-show');
+Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
 
 /*
 |--------------------------------------------------------------------------

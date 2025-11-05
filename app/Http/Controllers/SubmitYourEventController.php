@@ -18,7 +18,7 @@ class SubmitYourEventController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validate basic form data
+            // ✅ Step 1: Validate form data
             $validated = $request->validate([
                 'username'    => 'required|string|max:255',
                 'email'       => 'required|email',
@@ -30,41 +30,33 @@ class SubmitYourEventController extends Controller
                 'end_time'    => 'nullable|date|after:start_time',
                 'images'      => 'nullable|array',
                 'images.*'    => 'file|mimes:jpg,jpeg,png,gif,pdf,doc,docx|max:8192',
-
-                
                 'g-recaptcha-response' => 'required',
             ]);
 
-            // ✅ Step 1: Verify reCAPTCHA with Google
-            $captchaResponse = $request->input('g-recaptcha-response');
-            $secretKey = env('RECAPTCHA_SECRET_KEY');
-
+            // ✅ Step 2: Verify reCAPTCHA
             $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-                'secret' => $secretKey,
-                'response' => $captchaResponse,
+                'secret' => env('RECAPTCHA_SECRET_KEY'),
+                'response' => $request->input('g-recaptcha-response'),
             ]);
 
             $result = $response->json();
             if (empty($result['success']) || $result['success'] !== true) {
-                return back()
-                    ->withErrors(['g-recaptcha-response' => 'The reCAPTCHA verification failed. Please try again.'])
-                    ->withInput();
+                return back()->withErrors(['g-recaptcha-response' => 'reCAPTCHA verification failed.'])->withInput();
             }
 
-            // ✅ Step 2: Handle file uploads
-            $paths = [];
+            // ✅ Step 3: Handle file upload
+            $filePath = null;
             if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $file) {
-                    if ($file && $file->isValid()) {
-                        $fileName = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
-                        $paths[] = $file->storeAs('events', $fileName, 'public');
-                    } else {
-                        return back()->withErrors(['images' => 'One or more images failed to upload.'])->withInput();
-                    }
+                $file = $request->file('images')[0]; // only take the first image
+                if ($file && $file->isValid()) {
+                    $fileName = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+                    $filePath = $file->storeAs('events', $fileName, 'public');
+                } else {
+                    return back()->withErrors(['images' => 'Image failed to upload.'])->withInput();
                 }
             }
 
-            // ✅ Step 3: Save the event
+            // ✅ Step 4: Save the event submission
             EventSubmission::create([
                 'name'        => $validated['username'],
                 'email'       => $validated['email'],
@@ -74,7 +66,8 @@ class SubmitYourEventController extends Controller
                 'location'    => $validated['location'] ?? null,
                 'start_time'  => $validated['start_time'] ?? null,
                 'end_time'    => $validated['end_time'] ?? null,
-                'file_path'   => !empty($paths) ? json_encode($paths) : null,
+                // store plain string instead of JSON
+                'file_path'   => $filePath,
                 'status'      => 'pending',
             ]);
 
