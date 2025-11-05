@@ -13,7 +13,8 @@
 
     {{-- Sidebar Menu --}}
     <div id="sidebar"
-         class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 z-50">
+         class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 z-50"
+         style="transform: translateX(-100%);">
         <div class="p-5 border-b flex justify-between items-center">
             <h2 class="text-xl font-bold text-yellow-500">Menu</h2>
             <button id="close-btn" class="text-gray-600 text-2xl">&times;</button>
@@ -30,72 +31,51 @@
     </div>
 
     {{-- Background Overlay --}}
-    <div id="overlay"
-         class="fixed inset-0 bg-black bg-opacity-40 hidden z-40"></div>
-    </header>
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40" style="display:none;"></div>
+</header>
 
-    {{-- Main Content --}}
-    <main class="flex-grow flex items-center justify-center py-16 px-6">
-        <div class="max-w-xl bg-white p-8 rounded-2xl shadow-lg text-center">
-            <h2 class="text-3xl font-extrabold text-gray-800 mb-4">Our Story</h2>
-            <p class="text-gray-700 leading-relaxed text-base mb-6">
-                Tired of missing out on events in Brunei? <span class="font-semibold text-yellow-500">ManaEvent.bn</span> is your one-stop platform for discovering what’s happening — from concerts and pop-up markets to religious events and business expos.
-            </p>
-            <p class="text-gray-700 leading-relaxed text-base">
-                No more scrolling through social media. Just real-time updates, all in one place.
-                <br><span class="font-semibold text-yellow-500">Built for Bruneians, by Bruneians.</span>
-            </p>
-        </div>
-    </main>
+{{-- Inline script to handle menu --}}
+<script>
+(() => {
+  const menuBtn = document.getElementById('menu-btn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const closeBtn = document.getElementById('close-btn');
 
-    {{-- Footer --}}
-    <footer class="bg-yellow-400 text-white text-center py-3 text-sm mt-auto">
-        ©2025 ManaEvent.bn | All Rights Reserved.
-    </footer>
+  if (!menuBtn || !sidebar || !overlay || !closeBtn) return;
+
+  const openSidebar = () => {
+    sidebar.style.transform = 'translateX(0)';
+    overlay.style.display = 'block';
+    overlay.classList.remove('hidden');
+  };
+  const closeSidebar = () => {
+    sidebar.style.transform = 'translateX(-100%)';
+    overlay.style.display = 'none';
+    overlay.classList.add('hidden');
+  };
+
+  menuBtn.addEventListener('click', openSidebar);
+  closeBtn.addEventListener('click', closeSidebar);
+  overlay.addEventListener('click', closeSidebar);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+})();
+</script>
+
+{{-- Main content --}}
+<div class="container mx-auto px-6 py-16 text-center">
+    <h1 class="text-4xl font-bold mb-6 text-gray-800">About Us</h1>
+    <p class="max-w-2xl mx-auto text-gray-700 leading-relaxed">
+        Tired of missing out on events in Brunei? ManaEvent.bn is your one-stop platform for discovering what’s happening —
+        from concerts and pop-up markets to religious events and business expos.
+    </p>
+    <p class="max-w-2xl mx-auto text-gray-700 mt-4 leading-relaxed">
+        No more scrolling through social media. Just real-time updates, all in one place. 
+        Built for Bruneians, by Bruneians.
+    </p>
 </div>
 
-{{-- Optional Sidebar if you want to reuse the existing one --}}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const menuBtn = document.getElementById('menuBtn');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-
-    if(menuBtn && sidebar && overlay){
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.remove('-translate-x-full');
-            overlay.classList.remove('hidden');
-        });
-        overlay.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
-    }
-});
-</script>
-
-@section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const menuBtn = document.getElementById('menu-btn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const closeBtn = document.getElementById('close-btn');
-
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.remove('-translate-x-full');
-            overlay.classList.remove('hidden');
-        });
-
-        closeBtn.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
-
-        overlay.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
-    });
-</script>
+<footer class="bg-yellow-400 text-center text-white py-2 text-sm">
+    ©2025 Mana Event.
+</footer>
 @endsection
