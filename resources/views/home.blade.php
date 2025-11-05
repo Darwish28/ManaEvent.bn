@@ -1,331 +1,243 @@
+{{-- resources/views/home.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ManaEvent.bn</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ManaEvent.bn — Home</title>
+
+  {{-- Icons for hamburger/close --}}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
   <style>
-    :root {
-      --primary: #fbbf24;
-      --primary-dark: #f59e0b;
-      --text-dark: #333;
-      --text-light: #666;
-      --bg-light: #fff;
-      --shadow: 0 2px 10px rgba(0,0,0,0.08);
+    :root{
+      --yellow:#f4b61a;      /* brand yellow */
+      --yellow-600:#e1a514;  /* hover yellow */
+      --text:#1f2937;        /* gray-800 */
+      --muted:#6b7280;       /* gray-500/600 */
+      --card:#ffffff;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --radius:14px;
     }
 
-    /* ---------- Body (Background Image + Opacity Overlay) ---------- */
-    body {
-      font-family: 'Poppins', Arial, sans-serif;
-      margin: 0;
-      color: var(--text-dark);
-      line-height: 1.6;
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:#fff;color:var(--text)}
 
-      background:
-        linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
-        url('images/blackyellowwhite.jpg') center top no-repeat;
-        background-size: cover; 
-      background-attachment: fixed;
+    /* Header */
+    .banner{background:var(--yellow); position:sticky; top:0; z-index:200}
+    .bar{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:14px 18px}
+    #menuBtn{border:none;background:none;color:#fff;font-size:28px;cursor:pointer;line-height:1;display:flex;align-items:center}
+    #menuBtn:hover{transform:scale(1.08)}
+    .logo{width:70px}
+
+    /* Sidebar + overlay */
+    #overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:900}
+    #sidebar{
+      position:fixed;top:0;left:0;height:100vh;width:290px;background:#fff;
+      box-shadow:var(--shadow);transform:translateX(-100%);transition:transform .28s ease;z-index:1000;
+      display:flex;flex-direction:column;border-right:1px solid #eee
+    }
+    #sidebar.open{transform:translateX(0)}
+    .side-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #eee}
+    .side-brand{display:flex;align-items:center;gap:.6rem}
+    .side-brand img{width:28px;height:28px}
+    #closeSidebar{border:none;background:none;font-size:22px;color:#6b7280;cursor:pointer}
+    #closeSidebar:hover{color:#111}
+    .side-links{padding:8px}
+    .side-links a{
+      display:flex;align-items:center;gap:.6rem;padding:10px 12px;margin:4px 6px;border-radius:10px;
+      color:#374151;text-decoration:none
+    }
+    .side-links a:hover{background:#f7f7f7}
+    .side-links i{color:var(--yellow)}
+
+    /* Page container */
+    .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
+
+    /* Hero */
+    .hero{position:relative;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .hero-slide{display:none}
+    .hero-slide.active{display:block}
+    .hero-slide img{width:100%;display:block}
+    .hero-nav{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 10px;pointer-events:none
+    }
+    .hero-btn{
+      pointer-events:auto;width:38px;height:38px;border-radius:9999px;border:none;background:rgba(255,255,255,.9);
+      box-shadow:var(--shadow);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px
     }
 
-    /* ---------- Header ---------- */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.8rem 1.2rem;
-      box-shadow: var(--shadow);
+    /* CTA */
+    .cta-row{display:flex;justify-content:center;margin:18px 0 26px}
+    .cta{background:var(--yellow);color:#fff;border:none;border-radius:9999px;padding:10px 18px;font-weight:700;cursor:pointer}
+    .cta:hover{background:var(--yellow-600)}
+
+    /* Section title bar */
+    .section-title{
+      background:var(--yellow);color:#fff;border-radius:10px;
+      padding:9px 14px;font-weight:800;letter-spacing:.5px;text-align:center;margin:16px 0
     }
 
-    .header img {
-      max-width: 120px;
-      height: auto;
+    /* Cards */
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+    .card{grid-column:span 6;background:var(--card);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+    .card img{width:100%;height:160px;object-fit:cover;display:block}
+    .card .body{padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
+    .kicker{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.4px}
+    .viewmore{font-size:12px;color:#2563eb;text-decoration:none}
+    .viewmore:hover{text-decoration:underline}
+
+    /* Small “Upcoming” cards right side */
+    .mini{grid-column:span 3;background:var(--card);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+    .mini img{width:100%;height:130px;object-fit:cover}
+    .mini .body{padding:8px 10px}
+    .mini .name{font-size:12px;font-weight:700}
+
+    @media (max-width:1000px){
+      .card{grid-column:span 12}
+      .mini{grid-column:span 6}
     }
-
-    .menu-btn {
-      font-size: 1.8rem;
-      color: white;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-
-    /* ---------- Hero Slider ---------- */
-    .hero-slider {
-      position: relative;
-      max-width: 100%;
-      margin: 1.5rem auto;
-      overflow: hidden;
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-    }
-
-    .hero-slide {
-      display: none;
-      width: 100%;
-      transition: 0.5s;
-    }
-
-    .hero-slide img {
-      width: 100%;
-      display: block;
-      border-radius: 14px;
-    }
-
-    .hero-slide.active {
-      display: block;
-    }
-
-    .hero-slider .prev,
-    .hero-slider .next {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.4);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 50%;
-      font-size: 1.5rem;
-    }
-
-    .hero-slider .prev { left: 10px; }
-    .hero-slider .next { right: 10px; }
-
-    /* ---------- Submit Button ---------- */
-    .btn-submit {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      font-weight: 600;
-      padding: 0.8rem 1.6rem;
-      border-radius: 25px;
-      text-decoration: none;
-      margin: 1.5rem auto;
-      transition: all 0.3s ease;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-    }
-
-    .btn-submit:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-    }
-
-    /* ---------- Section Titles ---------- */
-    .section-title {
-      background: var(--primary);
-      color: white;
-      font-weight: 600;
-      padding: 0.7rem;
-      margin: 2rem auto 1rem;
-      text-align: center;
-      border-radius: 10px;
-      width: fit-content;
-      min-width: 250px;
-      box-shadow: var(--shadow);
-    }
-
-    /* ---------- Event Cards ---------- */
-    .events {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      padding: 0 1rem 2rem;
-      flex-wrap: wrap;
-    }
-
-    .event-card {
-      width: 280px;
-      background: var(--bg-light);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .event-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    }
-
-    .event-card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-    }
-
-    .event-card p {
-      margin: 0.8rem 1rem 0.2rem;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    .event-info {
-      font-size: 0.85rem;
-      color: var(--text-light);
-      margin: 0 1rem 0.5rem;
-    }
-
-    .event-info span {
-      display: inline-block;
-      margin-right: 0.5rem;
-    }
-
-    .view-more {
-      text-align: right;
-      margin: 0 1rem 1rem;
-    }
-
-    .view-more a {
-      font-size: 0.85rem;
-      text-decoration: none;
-      color: #2563eb;
-      transition: color 0.3s;
-    }
-
-    .view-more a:hover {
-      color: #1d4ed8;
-    }
-
-    /* ---------- Footer ---------- */
-    footer {
-      background: #f3f4f6;
-      text-align: center;
-      padding: 1.2rem;
-      font-size: 0.85rem;
-      color: var(--text-light);
-      margin-top: 2rem;
-    }
-
-    /* ---------- Responsive ---------- */
-    @media (max-width: 768px) {
-      .hero-slide img {
-        max-width: 95%;
-      }
-
-      .btn-submit {
-        width: 80%;
-      }
-
-      .events {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .event-card {
-        width: 90%;
-      }
+    @media (max-width:640px){
+      .mini{grid-column:span 12}
     }
   </style>
 </head>
 <body>
 
   <!-- Header -->
-  <div class="header">
-    <button class="menu-btn">&#9776;</button>
-    <img src="images/manaevent-logo.svg" alt="ManaEvent Logo">
-    <div style="width:32px;"></div>
-  </div>
-
-  <!-- Hero Slider -->
-  <div class="hero-slider">
-    <div class="hero-slide active">
-      <img src="images/NationalDay.png" alt="National Day">
+  <div class="banner">
+    <div class="bar">
+      <button id="menuBtn" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <img class="logo" src="/images/manaevent-logo.svg" alt="ManaEvent Logo">
+      <div style="width:28px"></div>
     </div>
-
-    <div class="hero-slide">
-      <img src="https://utktxqglouvgtidlfvmr.supabase.co/storage/v1/object/public/event_images/1759826308778-09b9dd1d-775f-4c91-8745-b56db8896b6e.jpeg" alt="New Event Image">
-    </div>
-
-    <button class="prev">&#10094;</button>
-    <button class="next">&#10095;</button>
   </div>
 
-  <!-- Submit Button -->
-  <div style="text-align:center;">
-    <a href="{{ route('submit-event') }}" class="btn-submit">+ Submit Your Event</a>
-  </div>
-
-  <!-- What's New -->
-  <div class="section-title">WHAT’S NEW THIS WEEK 🎉</div>
-  <div class="events">
-    <div class="event-card">
-      <img src="images/foodfestival.svg" alt="Food Festival">
-      <p>Food Festival</p>
-      <div class="event-info">
-        <span>📅 28 Oct 2025</span> • <span>📍 Brunei City Center</span>
+  <!-- Overlay & Sidebar -->
+  <div id="overlay"></div>
+  <aside id="sidebar" aria-label="Sidebar Navigation">
+    <div class="side-head">
+      <div class="side-brand">
+        <img src="/images/manaevent-logo.svg" alt="ManaEvent">
+        <strong>ManaEvent.bn</strong>
       </div>
-      <div class="view-more"><a href="{{ route('events.food-festival') }}">View more →</a></div>
+      <button id="closeSidebar" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
     </div>
+    <nav class="side-links">
+      <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i> <span>Home</span></a>
+      <a href="{{ route('about') }}"><i class="fa-solid fa-circle-info"></i> <span>About Us</span></a>
+      <a href="{{ route('submit-event') }}"><i class="fa-solid fa-plus"></i> <span>Submit Your Event</span></a>
+      <a href="{{ route('faq') }}"><i class="fa-solid fa-question"></i> <span>FAQ</span></a>
+      <a href="{{ route('contact') }}"><i class="fa-solid fa-envelope"></i> <span>Contact</span></a>
+      <a href="{{ route('settings') }}"><i class="fa-solid fa-gear"></i> <span>Settings</span></a>
+    </nav>
+  </aside>
 
-    <div class="event-card">
-      <img src="images/donation.svg" alt="Donation">
-      <p>Donation Drive</p>
-      <div class="event-info">
-        <span>📅 30 Oct 2025</span> • <span>📍 Kampong Ayer</span>
+  <main class="wrap">
+
+    <!-- Hero slider -->
+    <section class="hero">
+      <div class="hero-slide active"><img src="/images/NationalDay.png" alt="National Day"></div>
+      <div class="hero-slide"><img src="/images/Havock.png" alt="Community Event"></div>
+      <div class="hero-slide"><img src="/images/Suaseni.jpg" alt="Concert"></div>
+
+      <div class="hero-nav">
+        <button class="hero-btn" id="prev" aria-label="Previous slide"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="hero-btn" id="next" aria-label="Next slide"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
-      <div class="view-more"><a href="{{ route('events.donation') }}">View more →</a></div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Upcoming Events -->
-  <div class="section-title">UPCOMING EVENTS 🔥</div>
-  <div class="events">
-    <div class="event-card">
-      <img src="images/theatre.svg" alt="Theatre Performance">
-      <p>Theatre Performance</p>
-      <div class="event-info">
-        <span>📅 5 Nov 2025</span> • <span>📍 Royal Theatre</span>
-      </div>
-      <div class="view-more"><a href="{{ route('events.theatre-performance') }}">View more →</a></div>
+    <!-- CTA -->
+    <div class="cta-row">
+      <a href="{{ route('submit-event') }}"><button class="cta">+ Submit Your Event</button></a>
     </div>
 
-    <div class="event-card">
-      <img src="images/fireworks.svg" alt="Fireworks Show">
-      <p>Fireworks Show</p>
-      <div class="event-info">
-        <span>📅 10 Nov 2025</span> • <span>📍 Waterfront</span>
-      </div>
-      <div class="view-more"><a href="{{ route('events.firework-show') }}">View more →</a></div>
-    </div>
-  </div>
+    <!-- What's new -->
+    <div class="section-title">WHAT’S NEW THIS WEEK ?</div>
 
-  <!-- Footer -->
-  <footer>
-    © 2025 ManaEvent.bn — Bringing Brunei’s events together.
-  </footer>
+    <section class="grid" aria-label="What's new">
+      <article class="card">
+        <img src="/images/foodfestival.svg" alt="Food festival">
+        <div class="body">
+          <div>
+            <div class="kicker">FOOD FESTIVAL</div>
+          </div>
+          <a class="viewmore" href="{{ url('/events/food-festival') }}">View more</a>
+        </div>
+      </article>
 
-  <!-- Hero Slider JS -->
+      <article class="card">
+        <img src="/images/donation.svg" alt="Donation">
+        <div class="body">
+          <div><div class="kicker">DONATION</div></div>
+          <a class="viewmore" href="{{ url('/events/donation') }}">View more</a>
+        </div>
+      </article>
+
+      <aside class="mini">
+        <div style="background:#f8c339;height:100%;display:flex;align-items:center;justify-content:center;font-weight:800">
+          UPCOMING EVENTS !
+        </div>
+      </aside>
+
+      <article class="mini">
+        <img src="/images/theatre.svg" alt="Theatre Performance">
+        <div class="body">
+          <div class="name">THEATRE PERFORMANCE</div>
+          <a class="viewmore" href="{{ url('/events/theatre-performance') }}">View more</a>
+        </div>
+      </article>
+
+      <article class="mini">
+        <img src="/images/fireworks.svg" alt="Fireworks Show">
+        <div class="body">
+          <div class="name">FIREWORKS SHOW</div>
+          <a class="viewmore" href="{{ route('events.firework-show') }}">View more</a>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
   <script>
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.hero-slide');
-    const totalSlides = slides.length;
+    // ---------- Sidebar ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuBtn  = document.getElementById('menuBtn');
+      const sidebar  = document.getElementById('sidebar');
+      const overlay  = document.getElementById('overlay');
+      const closeBtn = document.getElementById('closeSidebar');
 
-    function showSlide(index) {
-      slides.forEach(slide => slide.classList.remove('active'));
-      slides[index].classList.add('active');
-    }
+      const openSidebar = () => {
+        sidebar.classList.add('open');
+        overlay.style.display = 'block';
+        const firstLink = sidebar.querySelector('a'); if (firstLink) firstLink.focus();
+      };
+      const closeSidebar = () => {
+        sidebar.classList.remove('open');
+        overlay.style.display = 'none';
+      };
 
-    document.querySelector('.next').addEventListener('click', () => {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      showSlide(currentSlide);
+      if (menuBtn)  menuBtn.addEventListener('click', openSidebar);
+      if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+      if (overlay)  overlay.addEventListener('click', closeSidebar);
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeSidebar(); });
     });
 
-    document.querySelector('.prev').addEventListener('click', () => {
-      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-      showSlide(currentSlide);
-    });
+    // ---------- Hero slider ----------
+    (function(){
+      const slides = document.querySelectorAll('.hero-slide');
+      if (!slides.length) return;
 
-    setInterval(() => {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      showSlide(currentSlide);
-    }, 5000);
+      let i = 0;
+      const show = (n)=>{ slides.forEach(s=>s.classList.remove('active')); slides[n].classList.add('active'); };
+
+      const next = ()=>{ i = (i+1) % slides.length; show(i); };
+      const prev = ()=>{ i = (i-1+slides.length) % slides.length; show(i); };
+
+      document.getElementById('next').addEventListener('click', next);
+      document.getElementById('prev').addEventListener('click', prev);
+      setInterval(next, 5000);
+    })();
   </script>
-
 </body>
 </html>

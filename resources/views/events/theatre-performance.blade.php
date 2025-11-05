@@ -13,7 +13,8 @@
 
     {{-- Sidebar Menu --}}
     <div id="sidebar"
-         class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 z-50">
+         class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 z-50"
+         style="transform: translateX(-100%);">
         <div class="p-5 border-b flex justify-between items-center">
             <h2 class="text-xl font-bold text-yellow-500">Menu</h2>
             <button id="close-btn" class="text-gray-600 text-2xl">&times;</button>
@@ -30,59 +31,62 @@
     </div>
 
     {{-- Background Overlay --}}
-    <div id="overlay"
-         class="fixed inset-0 bg-black bg-opacity-40 hidden z-40"></div>
-    </header>
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40" style="display:none;"></div>
+</header>
 
-    <div class="max-w-md mx-auto overflow-hidden rounded-b-2xl">
-        <img src="/images/rtspoli.png" alt="Theatre Performance" class="w-full h-auto object-cover rounded-b-2xl">
+{{-- Inline Script for Menu --}}
+<script>
+(() => {
+  const menuBtn = document.getElementById('menu-btn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const closeBtn = document.getElementById('close-btn');
 
-    <section class="p-5 text-gray-800">
-        <h2 class="text-lg font-extrabold mb-2">EVENT DETAILS:</h2>
-        <p class="text-sm mb-4 leading-relaxed">
-            Experience an evening of drama, music, and storytelling. Talented performers bring stories to life
-            on stage in a blend of classical and contemporary plays. A must-see night of inspiration and artistry.
-        </p>
+  if (!menuBtn || !sidebar || !overlay || !closeBtn) return;
 
-        <p><span class="text-red-500">📍</span> <strong>LOCATION:</strong> Bridex, Jerudong Park, Jerudong</p>
-        <p><span class="text-gray-800">📅</span> <strong>DATE:</strong> 21st September, 6PM–9PM</p>
-    </section>
+  const openSidebar = () => {
+    sidebar.style.transform = 'translateX(0)';
+    overlay.style.display = 'block';
+    overlay.classList.remove('hidden');
+  };
 
-    <section class="p-5">
-        <h3 class="font-semibold text-base mb-2">Event Map 📍</h3>
-        <a href="https://maps.app.goo.gl/LhqRd1wAzMgBZ2QX6" target="_blank">
-            <img src="/images/donationlocation.png" alt="Map" class="w-full rounded-lg shadow-md">
-            <p class="text-xs italic mt-1 text-center text-gray-500">Tap to open in Google Maps.</p>
-        </a>
-    </section>
+  const closeSidebar = () => {
+    sidebar.style.transform = 'translateX(-100%)';
+    overlay.style.display = 'none';
+    overlay.classList.add('hidden');
+  };
 
-    <footer class="bg-yellow-400 text-center text-white py-2 text-sm">
-        ©2025 Mana Event.
-    </footer>
+  menuBtn.addEventListener('click', openSidebar);
+  closeBtn.addEventListener('click', closeSidebar);
+  overlay.addEventListener('click', closeSidebar);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+})();
+</script>
+
+<div class="max-w-md mx-auto overflow-hidden rounded-b-2xl">
+    <img src="/images/rtspoli.png" alt="Theatre Performance" class="w-full h-auto object-cover rounded-b-2xl">
 </div>
 
-@section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const menuBtn = document.getElementById('menu-btn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const closeBtn = document.getElementById('close-btn');
+<section class="p-5 text-gray-800">
+    <h2 class="text-lg font-extrabold mb-2">EVENT DETAILS:</h2>
+    <p class="text-sm mb-4 leading-relaxed">
+        Experience a night of breathtaking drama and emotion in the theatre performance of <em>"Echoes of the Palace"</em>.
+        A story that explores love, betrayal, and courage — performed by Brunei’s most talented local actors.
+    </p>
 
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.remove('-translate-x-full');
-            overlay.classList.remove('hidden');
-        });
+    <p><span class="text-red-500">📍</span> <strong>LOCATION:</strong> Dewan Raya, Bandar Seri Begawan</p>
+    <p><span class="text-gray-800">📅</span> <strong>DATE:</strong> 30th August, 7PM–10PM</p>
+</section>
 
-        closeBtn.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
+<section class="p-5">
+    <h3 class="font-semibold text-base mb-2">Event Map 📍</h3>
+    <a href="https://maps.app.goo.gl/LkjvvEPysH9sVHg56" target="_blank">
+        <img src="/images/donationlocation.png" alt="Map" class="w-full rounded-lg shadow-md">
+        <p class="text-xs italic mt-1 text-center text-gray-500">Tap to open in Google Maps.</p>
+    </a>
+</section>
 
-        overlay.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
-    });
-</script>
+<footer class="bg-yellow-400 text-center text-white py-2 text-sm">
+    ©2025 Mana Event.
+</footer>
 @endsection

@@ -30,11 +30,10 @@
     </div>
 
     {{-- Background Overlay --}}
-    <div id="overlay"
-         class="fixed inset-0 bg-black bg-opacity-40 hidden z-40"></div>
-    </header>
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40"></div>
+</header>
 
-    <div class="max-w-md mx-auto overflow-hidden rounded-b-2xl">
+<div class="max-w-md mx-auto overflow-hidden rounded-b-2xl">
     <img src="/images/fireworksyeepee.jpg" alt="Theatre Performance" class="w-full h-auto object-cover rounded-b-2xl">
 
     <section class="p-5 text-gray-800">
@@ -60,29 +59,42 @@
         ©2025 Mana Event.
     </footer>
 </div>
+@endsection
 
+{{-- Move the script OUTSIDE of @section('content') --}}
 @section('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const menuBtn = document.getElementById('menu-btn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const closeBtn = document.getElementById('close-btn');
+document.addEventListener('DOMContentLoaded', () => {
+    const menuBtn = document.getElementById('menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const closeBtn = document.getElementById('close-btn');
 
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.remove('-translate-x-full');
-            overlay.classList.remove('hidden');
-        });
+    if (!menuBtn || !sidebar || !overlay || !closeBtn) return;
 
-        closeBtn.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
-
-        overlay.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
+    // open sidebar
+    menuBtn.addEventListener('click', () => {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
     });
+
+    // close sidebar
+    closeBtn.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+    });
+
+    overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    });
+});
 </script>
 @endsection
