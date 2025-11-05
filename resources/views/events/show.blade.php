@@ -31,35 +31,25 @@
 </header>
 
 <div class="max-w-md mx-auto overflow-hidden rounded-b-2xl bg-white shadow-md">
+
     {{-- Event Image --}}
-@php
-    $imagePath = null;
-
-    if (!empty($event->file_path)) {
-        // Clean up path and handle different storage cases
-        $cleanPath = str_replace(['public/', 'storage/'], '', $event->file_path);
-
-        // Check if it's in storage/app/public/events
-        if (file_exists(storage_path('app/public/events/' . basename($cleanPath)))) {
-            $imagePath = asset('storage/events/' . basename($cleanPath));
+    @php
+        $path = $event->file_path;
+        if (Str::startsWith($path, '[')) {
+            $decoded = json_decode($path, true);
+            $path = $decoded[0] ?? null;
         }
-        // If it's already events/ inside storage path
-        elseif (Str::contains($cleanPath, 'events/')) {
-            $imagePath = asset('storage/' . ltrim($cleanPath, '/'));
-        }
-        // If it's a static public image
-        elseif (Str::startsWith($cleanPath, 'images/')) {
-            $imagePath = asset($cleanPath);
-        }
-    }
-@endphp
 
-@if($imagePath)
-    <img src="{{ $imagePath }}" alt="{{ $event->event_name }}" class="w-full h-auto object-cover rounded-b-2xl">
-@else
-    <img src="{{ asset('events/default-event.svg') }}" alt="Default Event" class="w-full h-auto object-cover rounded-b-2xl">
-@endif
+        $imagePath = $path && file_exists(storage_path('app/public/' . $path))
+            ? asset('storage/' . $path)
+            : asset('events/default-event.jpg');
+    @endphp
 
+    <img 
+        src="{{ $imagePath }}" 
+        alt="{{ $event->event_name ?? 'Default Event' }}" 
+        class="w-full h-auto object-cover rounded-b-2xl"
+    />
 
     {{-- Event Details --}}
     <section class="p-5 text-gray-800">
@@ -68,27 +58,43 @@
             {{ $event->description ?? 'No description available for this event.' }}
         </p>
 
-        <p><span class="text-red-500">📍</span> 
-           <strong>LOCATION:</strong> {{ $event->location ?? 'Location not specified' }}
+        <p>
+            <span class="text-red-500">📍</span>
+            <strong>LOCATION:</strong> {{ $event->location ?? 'Location not specified' }}
         </p>
 
-        <p><span class="text-gray-800">📅</span> 
-           <strong>DATE:</strong> 
-           {{ \Carbon\Carbon::parse($event->start_time)->format('d M Y, h:i A') }}
-           @if($event->end_time)
-               – {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}
-           @endif
+        <p>
+            <span class="text-gray-800">📅</span>
+            <strong>DATE:</strong>
+            {{ \Carbon\Carbon::parse($event->start_time)->format('d M Y, h:i A') }}
+            @if($event->end_time)
+                – {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}
+            @endif
         </p>
     </section>
 
-    {{-- Optional Map --}}
-    @if(!empty($event->location))
+    {{-- Event Map --}}
+    @if (!empty($event->location))
         <section class="p-5">
             <h3 class="font-semibold text-base mb-2">Event Map 📍</h3>
-            <a href="https://www.google.com/maps/search/{{ urlencode($event->location) }}" target="_blank">
-                <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ urlencode($event->location) }}&zoom=15&size=600x300&markers=color:red%7C{{ urlencode($event->location) }}&key=YOUR_API_KEY"
-                     alt="Map" class="w-full rounded-lg shadow-md">
-                <p class="text-xs italic mt-1 text-center text-gray-500">Tap to open in Google Maps.</p>
+
+            @php
+                $encodedLocation = urlencode($event->location);
+            @endphp
+
+            <a href="https://www.google.com/maps/search/?api=1&query={{ $encodedLocation }}" target="_blank">
+                <iframe
+                    width="100%"
+                    height="300"
+                    style="border:0; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1);"
+                    loading="lazy"
+                    allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps?q={{ $encodedLocation }}&output=embed">
+                </iframe>
+                <p class="text-xs italic mt-1 text-center text-gray-500">
+                    Tap to open in Google Maps.
+                </p>
             </a>
         </section>
     @endif

@@ -176,7 +176,7 @@
         </div>
       </div>
     @empty
-      <p class="text-center text-gray-500 w-full">No new events this week.</p>
+      <p class="text-center text-gray-500 w-full">No more new events this week.</p>
     @endforelse
   </div>
 

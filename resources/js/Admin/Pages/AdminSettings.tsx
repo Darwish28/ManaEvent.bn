@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useAdminAuth } from '../Context/AdminAuthContext'
-import { EyeIcon, EyeOffIcon, DownloadIcon, LogOutIcon } from 'lucide-react'
+import { EyeIcon, EyeOffIcon, LogOutIcon, ServerIcon, DatabaseIcon, InfoIcon, ActivityIcon } from 'lucide-react'
+
 const AdminSettings = () => {
   const { adminUser, logout } = useAdminAuth()
   const [currentPassword, setCurrentPassword] = useState('')
@@ -12,11 +13,12 @@ const AdminSettings = () => {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [isChangingPassword, setIsChangingPassword] = useState(false)
-  const [isExporting, setIsExporting] = useState(false)
+
   const handleChangePassword = (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setSuccess('')
+
     // Validate passwords
     if (!currentPassword || !newPassword || !confirmPassword) {
       setError('All password fields are required')
@@ -30,6 +32,7 @@ const AdminSettings = () => {
       setError('New password must be at least 8 characters long')
       return
     }
+
     // Simulate password change
     setIsChangingPassword(true)
     setTimeout(() => {
@@ -40,14 +43,7 @@ const AdminSettings = () => {
       setConfirmPassword('')
     }, 1000)
   }
-  const handleExportData = (dataType: string) => {
-    setIsExporting(true)
-    // Simulate data export
-    setTimeout(() => {
-      setIsExporting(false)
-      alert(`${dataType} data exported successfully`)
-    }, 1500)
-  }
+
   return (
     <div>
       <div className="mb-6">
@@ -56,6 +52,7 @@ const AdminSettings = () => {
           Manage your admin account and system settings
         </p>
       </div>
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Account Settings */}
         <div className="bg-white shadow rounded-lg overflow-hidden">
@@ -76,24 +73,19 @@ const AdminSettings = () => {
                 <p className="text-sm text-gray-500">Administrator</p>
               </div>
             </div>
+
             {error && (
               <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4">
-                <div className="flex">
-                  <div className="ml-3">
-                    <p className="text-sm text-red-700">{error}</p>
-                  </div>
-                </div>
+                <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
+
             {success && (
               <div className="mb-4 bg-green-50 border-l-4 border-green-500 p-4">
-                <div className="flex">
-                  <div className="ml-3">
-                    <p className="text-sm text-green-700">{success}</p>
-                  </div>
-                </div>
+                <p className="text-sm text-green-700">{success}</p>
               </div>
             )}
+
             <form onSubmit={handleChangePassword} className="space-y-4">
               <div>
                 <label
@@ -123,6 +115,7 @@ const AdminSettings = () => {
                   </button>
                 </div>
               </div>
+
               <div>
                 <label
                   htmlFor="new-password"
@@ -151,6 +144,7 @@ const AdminSettings = () => {
                   </button>
                 </div>
               </div>
+
               <div>
                 <label
                   htmlFor="confirm-password"
@@ -179,11 +173,16 @@ const AdminSettings = () => {
                   </button>
                 </div>
               </div>
+
               <div className="flex justify-end">
                 <button
                   type="submit"
                   disabled={isChangingPassword}
-                  className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${isChangingPassword ? 'bg-yellow-400' : 'bg-yellow-400 hover:bg-yellow-500'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                  className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
+                    isChangingPassword
+                      ? 'bg-yellow-400'
+                      : 'bg-yellow-400 hover:bg-yellow-500'
+                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
                 >
                   {isChangingPassword ? 'Changing...' : 'Change Password'}
                 </button>
@@ -191,51 +190,45 @@ const AdminSettings = () => {
             </form>
           </div>
         </div>
-        {/* Data Management */}
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">
-              Data Management
-            </h3>
-          </div>
-          <div className="p-6">
-            <p className="text-sm text-gray-500 mb-6">
-              Export system data for backup or analysis purposes. All data is
-              exported in CSV format.
-            </p>
-            <div className="space-y-4">
-              <button
-                type="button"
-                onClick={() => handleExportData('Events')}
-                disabled={isExporting}
-                className="inline-flex items-center w-full justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <DownloadIcon size={18} className="mr-2" />
-                Export Events Data
-              </button>
-              <button
-                type="button"
-                onClick={() => handleExportData('Users')}
-                disabled={isExporting}
-                className="inline-flex items-center w-full justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <DownloadIcon size={18} className="mr-2" />
-                Export Users Data
-              </button>
-              <button
-                type="button"
-                onClick={() => handleExportData('System')}
-                disabled={isExporting}
-                className="inline-flex items-center w-full justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <DownloadIcon size={18} className="mr-2" />
-                Export System Logs
-              </button>
+
+        {/* Right Column — System Info above, Account Actions below */}
+        <div className="space-y-6">
+          {/* System Information */}
+          <div className="bg-white shadow rounded-lg overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-200 flex items-center gap-2">
+              <InfoIcon size={18} className="text-yellow-500" />
+              <h3 className="text-lg font-medium text-gray-900">
+                System Information
+              </h3>
             </div>
-            <div className="mt-8 pt-6 border-t">
-              <h4 className="text-base font-medium text-gray-900 mb-4">
+            <div className="p-6 space-y-3 text-sm text-gray-700">
+              <p className="flex items-center">
+                <ServerIcon size={16} className="text-blue-500 mr-2" />
+                <strong>Server Status:</strong>&nbsp; Online ✅
+              </p>
+              <p className="flex items-center">
+                <DatabaseIcon size={16} className="text-green-500 mr-2" />
+                <strong>Database:</strong>&nbsp; SQLite
+              </p>
+              <p className="flex items-center">
+                <ActivityIcon size={16} className="text-purple-500 mr-2" />
+                <strong>App Version:</strong>&nbsp; v1.0.0
+              </p>
+              <p className="flex items-center">
+                <InfoIcon size={16} className="text-gray-500 mr-2" />
+                <strong>Last Update:</strong>&nbsp; November 2025
+              </p>
+            </div>
+          </div>
+
+          {/* Account Actions */}
+          <div className="bg-white shadow rounded-lg overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">
                 Account Actions
-              </h4>
+              </h3>
+            </div>
+            <div className="p-6">
               <button
                 type="button"
                 onClick={() => logout()}
@@ -251,4 +244,5 @@ const AdminSettings = () => {
     </div>
   )
 }
+
 export default AdminSettings

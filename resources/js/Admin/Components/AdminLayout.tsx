@@ -44,11 +44,6 @@ const AdminLayout = () => {
       icon: <UsersIcon size={20} />,
     },
     {
-      name: 'Notification Settings',
-      path: '/notifications',
-      icon: <BellIcon size={20} />,
-    },
-    {
       name: 'Admin Settings',
       path: '/settings',
       icon: <SettingsIcon size={20} />,
