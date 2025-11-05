@@ -148,12 +148,6 @@
               <label class="toggle"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label>
             </div>
             <div class="flex items-center justify-between">
-              <div>
-                <p class="font-medium text-base">Email Notifications</p>
-                <p class="text-sm text-slate-700">Receive notifications via email</p>
-              </div>
-              <label class="toggle"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label>
-            </div>
             <button class="btn btn-brand mt-4"><i data-feather="save" class="w-4 h-4"></i> Save preferences</button>
           </div>
         </div>
