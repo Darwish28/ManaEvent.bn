@@ -39,7 +39,7 @@ class RegisterController extends Controller
 
         // ✅ Redirect to login with success message
         return redirect()
-            ->route('login.form')
+            ->route('login')
             ->with('success', '🎉 Account created successfully! Please log in.');
     }
 }

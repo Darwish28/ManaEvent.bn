@@ -11,17 +11,22 @@
 
   <style>
     :root{
-      --yellow:#f4b61a;      /* brand yellow */
-      --yellow-600:#e1a514;  /* hover yellow */
-      --text:#1f2937;        /* gray-800 */
-      --muted:#6b7280;       /* gray-500/600 */
+      --yellow:#f4b61a;
+      --yellow-600:#e1a514;
+      --text:#1f2937;
+      --muted:#6b7280;
       --card:#ffffff;
       --shadow:0 10px 30px rgba(0,0,0,.08);
       --radius:14px;
     }
-
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:#fff;color:var(--text)}
+
+    /* ---------- Body (Background Image + Opacity Overlay) ---------- */ 
+    body { font-family: 'Poppins', Arial, sans-serif; 
+      margin: 0; color: var(--text-dark); line-height: 1.6; background: 
+      linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('images/blackyellowwhite.jpg') 
+      center top no-repeat; background-size: cover; background-attachment: fixed; }
 
     /* Header */
     .banner{background:var(--yellow); position:sticky; top:0; z-index:200}
@@ -79,7 +84,27 @@
     }
 
     /* Cards */
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+    .grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+  justify-content:flex-start;
+}
+.grid.single{
+  justify-content:center;
+}
+.card{
+  flex:1 1 calc(50% - 18px);
+  max-width:calc(50% - 18px);
+  background:var(--card);
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+@media (max-width:1000px){
+  .card{flex:1 1 100%;max-width:100%;}
+}
+
     .card{grid-column:span 6;background:var(--card);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
     .card img{width:100%;height:160px;object-fit:cover;display:block}
     .card .body{padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
@@ -87,18 +112,8 @@
     .viewmore{font-size:12px;color:#2563eb;text-decoration:none}
     .viewmore:hover{text-decoration:underline}
 
-    /* Small “Upcoming” cards right side */
-    .mini{grid-column:span 3;background:var(--card);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
-    .mini img{width:100%;height:130px;object-fit:cover}
-    .mini .body{padding:8px 10px}
-    .mini .name{font-size:12px;font-weight:700}
-
     @media (max-width:1000px){
       .card{grid-column:span 12}
-      .mini{grid-column:span 6}
-    }
-    @media (max-width:640px){
-      .mini{grid-column:span 12}
     }
   </style>
 </head>
@@ -173,29 +188,49 @@
           <a class="viewmore" href="{{ url('/events/donation') }}">View more</a>
         </div>
       </article>
+    </section>
 
-      <aside class="mini">
-        <div style="background:#f8c339;height:100%;display:flex;align-items:center;justify-content:center;font-weight:800">
-          UPCOMING EVENTS !
-        </div>
-      </aside>
-
-      <article class="mini">
+    <!-- Upcoming Events (reformatted to card layout) -->
+    <div class="section-title">UPCOMING EVENTS 🎉</div>
+    <section class="grid" aria-label="Upcoming Events">
+      <article class="card">
         <img src="/images/theatre.svg" alt="Theatre Performance">
         <div class="body">
-          <div class="name">THEATRE PERFORMANCE</div>
+          <div class="kicker">THEATRE PERFORMANCE</div>
           <a class="viewmore" href="{{ url('/events/theatre-performance') }}">View more</a>
         </div>
       </article>
 
-      <article class="mini">
+      <article class="card">
         <img src="/images/fireworks.svg" alt="Fireworks Show">
         <div class="body">
-          <div class="name">FIREWORKS SHOW</div>
+          <div class="kicker">FIREWORKS SHOW</div>
           <a class="viewmore" href="{{ route('events.firework-show') }}">View more</a>
         </div>
       </article>
     </section>
+
+    <!-- ✅ Latest Approved Events -->
+    @if(isset($upcoming) && $upcoming->count() > 0)
+      <div class="section-title">LATEST APPROVED EVENTS 🌟</div>
+      <section class="grid {{ $upcoming->count() === 1 ? 'single' : '' }}" aria-label="Latest Approved Events">
+        @foreach($upcoming as $event)
+          <article class="card">
+            <img 
+              src="{{ $event->file_path ? asset('storage/' . $event->file_path) : asset('images/default-event.jpg') }}" 
+              alt="{{ $event->event_name }}" 
+            >
+            <div class="body">
+              <div>
+                <div class="kicker">{{ strtoupper($event->event_name) }}</div>
+                <small class="text-gray-500">{{ \Carbon\Carbon::parse($event->start_time)->format('d M Y') }} — {{ $event->location ?? 'TBA' }}</small>
+              </div>
+              <a class="viewmore" href="{{ route('events.show', $event->id) }}">View more</a>
+            </div>
+          </article>
+        @endforeach
+      </section>
+    @endif
 
   </main>
 
