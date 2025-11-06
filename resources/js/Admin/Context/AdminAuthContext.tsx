@@ -33,9 +33,9 @@ export const AdminAuthProvider = ({ children }: { children: React.ReactNode }) =
   const [adminUser, setAdminUser] = useState<AdminUser | null>(null)
   const [loading, setLoading] = useState(true)
 
-  axios.defaults.withCredentials = true
-  axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
+  axios.defaults.withCredentials = true;
+  axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://manaeventbn.duckdns.org';
 
   // ✅ Verify Laravel session on app load
   useEffect(() => {
@@ -79,6 +79,7 @@ export const AdminAuthProvider = ({ children }: { children: React.ReactNode }) =
       return false
     }
   }
+console.log('🛰️ Axios Base URL:', axios.defaults.baseURL);
 
   // ✅ Logout
   const logout = async (): Promise<void> => {
