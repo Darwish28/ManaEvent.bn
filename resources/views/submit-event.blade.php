@@ -62,6 +62,13 @@
 })();
 </script>
 
+{{-- Load Google reCAPTCHA --}}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+@error('g-recaptcha-response')
+  <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+@enderror
+
 {{-- Main Form --}}
 <div class="max-w-3xl mx-auto px-6 py-10 text-gray-800">
     <h1 class="text-3xl font-bold mb-6">Submit Your Event</h1>
@@ -123,6 +130,14 @@
             <label for="file" class="block text-gray-700 font-medium mb-2">Upload File</label>
             <input type="file" id="file" name="file"
                 class="w-full border border-gray-300 rounded-lg px-4 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-yellow-400">
+        </div>
+
+        {{-- reCAPTCHA Section --}}
+        <div class="mt-4">
+            <div class="g-recaptcha" data-sitekey="6Lc6Cv4rAAAAACmGNsKqJK_kStDGpZdwmaMtnRWw"></div>
+            @error('g-recaptcha-response')
+                <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+            @enderror
         </div>
 
         <div class="flex justify-end">
