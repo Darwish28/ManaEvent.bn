@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import axios from 'axios'
-import "../../../css/app.css";
+import "../../../css/app.css"
 import { useAdminAuth } from '../Context/AdminAuthContext'
 
+// ✅ Axios defaults for Laravel Sanctum
 axios.defaults.withCredentials = true
 axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest"
+axios.defaults.baseURL = "http://manaeventbn.duckdns.org"
 
 const AdminLogin = () => {
   const [adminId, setAdminId] = useState('')
@@ -15,7 +17,7 @@ const AdminLogin = () => {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
-  const { setIsAuthenticated } = useAdminAuth() // ✅ Correct hook placement (top level)
+  const { setIsAuthenticated } = useAdminAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,46 +25,42 @@ const AdminLogin = () => {
     setIsLoading(true)
 
     try {
-      // ✅ Step 1: Refresh CSRF cookie
+      // ✅ Step 1: Fetch CSRF cookie (required for Sanctum)
       await axios.get('/sanctum/csrf-cookie', { withCredentials: true })
 
-      // ✅ Step 2: Attempt login
+      // ✅ Step 2: Send login request
       const res = await axios.post(
-        '/admin/login',
+        '/api/admin/login',
         { admin_id: adminId, password },
         { withCredentials: true }
       )
 
       console.log('✅ Login response:', res.data)
 
-      if (res.data?.success) {
-        // ✅ Step 3: Verify admin identity
-        const me = await axios.get('/api/admin/me', { withCredentials: true })
-        console.log('✅ Me response:', me.data)
+      // ✅ Step 3: Verify session
+      const me = await axios.get('/api/admin/me', { withCredentials: true })
+      console.log('✅ Me response:', me.data)
 
-        if (me.data?.authenticated) {
-          // ✅ Set auth state + store locally
-          setIsAuthenticated(true)
-          localStorage.setItem('adminAuth', JSON.stringify({
-            authenticated: true,
-            user: me.data.user
-          }))
-
-          console.log('🧭 Navigating to dashboard now...')
-          navigate('/dashboard')
-          return
-        } else {
-          setError('Session not established. Try again.')
-        }
+      if (me.data?.authenticated) {
+        setIsAuthenticated(true)
+        localStorage.setItem('adminAuth', JSON.stringify({
+          authenticated: true,
+          user: me.data.user
+        }))
+        console.log('🧭 Navigating to dashboard...')
+        navigate('/admin/dashboard')
       } else {
-        setError('Invalid Admin ID or Password.')
+        setError('Session not established. Try again.')
       }
+
     } catch (err: any) {
       console.error('❌ Login error:', err)
       if (err.response?.status === 422) {
         setError('Both Admin ID and Password are required.')
       } else if (err.response?.status === 401) {
         setError('Invalid Admin ID or Password.')
+      } else if (err.response?.status === 419) {
+        setError('CSRF token mismatch. Please refresh and try again.')
       } else {
         setError('Login failed. Please try again later.')
       }
