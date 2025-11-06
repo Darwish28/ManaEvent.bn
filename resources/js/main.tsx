@@ -6,7 +6,7 @@ import "../css/app.css";
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://manaevent.bn.test';
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const token = document
   .querySelector('meta[name="csrf-token"]')
