@@ -52,18 +52,18 @@ const Dashboard = () => {
 
         // Normalize backend rows to the fields your UI expects
         const normalized: ModalEvent[] = (data?.recentSubmissions ?? []).map((e: any) => ({
-  id: String(e.id),
-  // 🩵 match your SQLite table fields
-  title: e.event_name ?? 'Untitled',
-  submitterName: e.name ?? 'Unknown',
-  submitterEmail: e.email ?? '',
-  eventDate: e.start_time ?? e.created_at ?? null,
-  status: e.status ?? 'pending',
-  description: e.description ?? '',
-  location: e.location ?? 'Not specified',
-  category: e.category ?? 'General',
-  ...e,
-}))
+          id: String(e.id),
+          // 🩵 match your SQLite table fields
+          title: e.event_name ?? 'Untitled',
+          submitterName: e.name ?? 'Unknown',
+          submitterEmail: e.email ?? '',
+          eventDate: e.start_time ?? e.created_at ?? null,
+          status: e.status ?? 'pending',
+          description: e.description ?? '',
+          location: e.location ?? 'Not specified',
+          category: e.category ?? 'General',
+          ...e,
+        }))
 
         setRecentEvents(normalized)
       })
@@ -182,7 +182,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <p className="text-sm font-medium text-blue-600 truncate">
-                         <Link to={`/admin/submissions?id=${event.id}`}>{event.title}</Link>
+                        <Link to={`/admin/submissions?id=${event.id}`}>{event.title}</Link>
                       </p>
                       <div className="ml-2 flex-shrink-0">
                         {event.status === 'pending' && (
@@ -299,15 +299,14 @@ const Dashboard = () => {
                         <strong>Status:</strong>{' '}
                         <span
                           className={`px-2 py-1 text-xs font-medium rounded-full 
-                          ${
-                            selectedEvent.status === 'pending'
+                          ${selectedEvent.status === 'pending'
                               ? 'bg-yellow-100 text-yellow-800'
                               : selectedEvent.status === 'approved'
-                              ? 'bg-green-100 text-green-800'
-                              : selectedEvent.status === 'rejected'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-blue-100 text-blue-800'
-                          }`}
+                                ? 'bg-green-100 text-green-800'
+                                : selectedEvent.status === 'rejected'
+                                  ? 'bg-red-100 text-red-800'
+                                  : 'bg-blue-100 text-blue-800'
+                            }`}
                         >
                           {selectedEvent.status
                             .charAt(0)

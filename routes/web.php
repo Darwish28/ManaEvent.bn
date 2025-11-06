@@ -34,19 +34,14 @@ Route::get('/api/admin/me', function (Request $request) {
     return response()->json(['authenticated' => false], 200);
 });
 
-// ✅ Admin Authentication Routes
-Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.submit');
-Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
-
-// ✅ Admin APIs & Dashboard (Protected)
-Route::middleware('auth:admin')->prefix('admin')->group(function () {
+// ✅ Admin APIs & Dashboard (Admin routes are public; dashboard will handle auth)
+Route::prefix('admin')->group(function () {
     Route::get('/event-submissions', [AdminEventSubmissionController::class, 'index'])->name('admin.event-submissions.index');
     Route::put('/event-submissions/{id}', [AdminEventSubmissionController::class, 'update'])->name('admin.event-submissions.update');
     Route::delete('/event-submissions/{id}', [AdminEventSubmissionController::class, 'destroy'])->name('admin.event-submissions.destroy');
     Route::get('/dashboard/stats', [DashboardController::class, 'stats'])->name('admin.dashboard.stats');
 
-    // ✅ React SPA Catch-All for Admin Panel
+    // React SPA Catch-All for Admin Panel
     Route::view('/{any?}', 'layouts.admin')->where('any', '.*');
 });
 
