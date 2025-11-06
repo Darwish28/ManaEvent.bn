@@ -35,7 +35,7 @@ export const AdminAuthProvider = ({ children }: { children: React.ReactNode }) =
 
   axios.defaults.withCredentials = true
   axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-  axios.defaults.baseURL = 'http://manaevent.bn.test'
+  axios.defaults.baseURL = 'http://manaeventbn.duckdns.org'
 
   // ✅ Verify Laravel session on app load
   useEffect(() => {
