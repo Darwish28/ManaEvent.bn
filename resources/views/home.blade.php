@@ -139,12 +139,12 @@
       <button id="closeSidebar" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <nav class="side-links">
-      <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i> <span>Home</span></a>
-      <a href="{{ route('about') }}"><i class="fa-solid fa-circle-info"></i> <span>About Us</span></a>
-      <a href="{{ route('submit-event') }}"><i class="fa-solid fa-plus"></i> <span>Submit Your Event</span></a>
-      <a href="{{ route('faq') }}"><i class="fa-solid fa-question"></i> <span>FAQ</span></a>
-      <a href="{{ route('contact') }}"><i class="fa-solid fa-envelope"></i> <span>Contact</span></a>
-      <a href="{{ route('settings') }}"><i class="fa-solid fa-gear"></i> <span>Settings</span></a>
+      <a href="{{ route('home') }}" class="block hover:text-yellow-500 font-medium">🏠 Home</a>
+            <a href="{{ route('settings') }}" class="block hover:text-yellow-500 font-medium">⚙️ Settings</a>
+            <a href="{{ route('about') }}" class="block hover:text-yellow-500 font-medium">ℹ️ About Us</a>
+            <a href="{{ route('faq') }}" class="block hover:text-yellow-500 font-medium">❓ FAQ</a>
+            <a href="{{ route('contact') }}" class="block hover:text-yellow-500 font-medium">📞 Contact Us</a>
+            <a href="{{ route('submit-event') }}" class="block hover:text-yellow-500 font-medium">📅 Submit Your Event!</a>
     </nav>
   </aside>
 

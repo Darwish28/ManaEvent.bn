@@ -67,7 +67,7 @@
 </script>
 
 <div class="max-w-md mx-auto overflow-hidden rounded-b-2xl">
-    <img src="/images/foodfestival.svg" 
+    <img src="/images/sgfoodfest.jpeg" 
          alt="Food Festival" 
          class="w-full h-auto object-cover rounded-b-2xl">
 </div>
