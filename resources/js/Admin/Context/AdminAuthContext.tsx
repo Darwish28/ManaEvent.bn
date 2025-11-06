@@ -35,7 +35,7 @@ export const AdminAuthProvider = ({ children }: { children: React.ReactNode }) =
 
   axios.defaults.withCredentials = true
   axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
-  axios.defaults.baseURL = 'import.meta.env.VITE_API_BASE_URL'
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 
   // ✅ Verify Laravel session on app load
   useEffect(() => {

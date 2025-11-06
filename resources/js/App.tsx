@@ -15,7 +15,7 @@ function App() {
 axios.defaults.withCredentials = true;
 
 // ✅ Set base URL for Laravel backend (adjust to your case)
-axios.defaults.baseURL = 'http://manaevent.bn.test';
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
 // ✅ Attach CSRF token automatically
 const token = document
